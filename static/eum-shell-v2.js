@@ -97,7 +97,7 @@
       { key: 'myrealid', name: '이음 캠프', tagline: '수련회·모임 운영 도우미', emoji: '🏕️', url: 'https://eum-camp-template.web.app/', accent: '#a5b4fc' },
       { key: 'eumplay', name: '이음 플레이', tagline: '교회 활동 게임 9종 · 진행 도우미', emoji: '🎲', url: 'https://lgh5440.github.io/eum-play/', accent: '#34d399' },
       { key: 'eumschool', name: '이음 스쿨', tagline: '교회학교 통합 양육 (운영 중)', emoji: '📚', url: '', accent: '#06b6d4', status: 'current' },
-      { key: 'eumphoto', name: '이음 포토', tagline: '사진 정리 데스크톱 앱 (준비 중)', emoji: '📷', url: '', accent: '#f43f5e', status: 'coming-soon' }
+      { key: 'eumphoto', name: '이음 포토', tagline: '사진 정리 데스크톱 앱', emoji: '📷', url: 'https://lgh5440.github.io/eum-photo/', accent: '#f43f5e' }
     ];
 
     var cards = '';
