@@ -1,0 +1,509 @@
+/* ============================================================
+   이음 스쿨 v5 Shell — 마이리얼ID형 다크 네이비 대시보드
+   2026-05-15 신규 작성 (eum-school-v5)
+
+   색 팔레트:
+   - 배경     #0B1426 (가장 어두운 네이비)
+   - 카드     #162338
+   - 카드 hover #1B2A42
+   - 청록     #2DD4BF (출석·완료)
+   - 파랑     #60A5FA (정보·온라인)
+   - 주황     #FB923C (대기·새친구)
+   - 빨강     #F87171 (결석·돌봄 필요)
+   - 초록     #4ADE80 (성공)
+   - 보라     #A78BFA (기도제목)
+   ============================================================ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+:root {
+  --bg-app: #0B1426;
+  --bg-card: #162338;
+  --bg-card-hover: #1B2A42;
+  --bg-soft: #1F2D44;
+  --bg-input: #0F1A2E;
+
+  --border: #1F2D44;
+  --border-strong: #2A3A55;
+
+  --text: #F1F5F9;
+  --text-sub: #94A3B8;
+  --text-dim: #64748B;
+
+  --teal:   #C9962B;
+  --blue:   #F0BC78;
+  --orange: #FB923C;
+  --green:  #4ADE80;
+  --red:    #F87171;
+  --purple: #A78BFA;
+
+  --radius-card: 12px;
+  --radius-btn: 8px;
+  --radius-pill: 999px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Pretendard",
+               "Apple SD Gothic Neo", "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg-app);
+  line-height: 1.45;
+  padding-bottom: 70px; /* 하단 탭 공간 */
+}
+
+a { color: var(--blue); text-decoration: none; }
+
+/* ─── 상단 헤더 ─────────────────────────────────────── */
+.eum-h {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--bg-app);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+}
+.eum-h__top { display: flex; align-items: center; gap: 10px; }
+.eum-h__logo {
+  width: 30px; height: 30px;
+  background: rgba(201, 150, 43, 0.1);
+  border: 1px solid rgba(201, 150, 43, 0.25);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.eum-h__brand { font-weight: 800; font-size: 1rem; letter-spacing: -0.01em; }
+.eum-h__spacer { flex: 1; }
+.eum-h__btn {
+  border: 0; background: var(--bg-soft); color: var(--text);
+  padding: 6px 12px; border-radius: var(--radius-pill);
+  font-size: 0.85rem; cursor: pointer;
+}
+.eum-h__btn:hover { background: var(--bg-card-hover); }
+.eum-h__meta {
+  margin-top: 6px; font-size: 0.85rem; color: var(--text-sub);
+  display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+}
+.eum-h__meta strong { color: var(--text); font-weight: 600; }
+
+/* ─── 메인 ─────────────────────────────────────────── */
+.eum-main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 12px;
+}
+
+/* ─── 히어로 카드 ──────────────────────────────────── */
+.eum-hero {
+  background: linear-gradient(135deg, #16335A 0%, #1A4F6E 100%);
+  border: 1px solid #2A4F7E;
+  border-radius: var(--radius-card);
+  padding: 18px;
+  margin-bottom: 12px;
+}
+.eum-hero__label {
+  font-size: 0.85rem; color: #93C5FD;
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
+}
+.eum-hero__title {
+  font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 14px;
+}
+.eum-hero__actions {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+.eum-hero__action {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text);
+  padding: 10px 8px;
+  border-radius: var(--radius-btn);
+  font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; text-align: center;
+  text-decoration: none;
+}
+.eum-hero__action:hover { background: rgba(255,255,255,0.14); }
+
+/* ─── 카드 ─────────────────────────────────────────── */
+.eum-c {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.eum-c h2 {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 8px;
+  font-weight: 700;
+  display: flex; align-items: center; gap: 6px;
+}
+.eum-c h3 {
+  font-size: 0.85rem; color: var(--text); font-weight: 600;
+  margin: 8px 0 4px;
+}
+.eum-c p, .eum-c .hint {
+  font-size: 0.85rem; color: var(--text-sub); margin-bottom: 4px;
+}
+
+/* ─── KPI 그리드 ───────────────────────────────────── */
+.eum-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.eum-kpi {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 12px;
+}
+.eum-kpi__label {
+  font-size: 0.85rem; color: var(--text-sub); margin-bottom: 4px;
+}
+.eum-kpi__value {
+  font-size: 1.55rem; font-weight: 800; color: var(--text); line-height: 1.1;
+}
+.eum-kpi__unit {
+  font-size: 0.85rem; color: var(--text-dim);
+  margin-left: 2px; font-weight: 600;
+}
+.eum-kpi.acc-teal   { border-left: 3px solid var(--teal); }
+.eum-kpi.acc-blue   { border-left: 3px solid var(--blue); }
+.eum-kpi.acc-orange { border-left: 3px solid var(--orange); }
+.eum-kpi.acc-red    { border-left: 3px solid var(--red); }
+.eum-kpi.acc-green  { border-left: 3px solid var(--green); }
+.eum-kpi.acc-purple { border-left: 3px solid var(--purple); }
+
+/* ─── 운영 현황(진행률) ────────────────────────────── */
+.eum-prog__row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.eum-prog__row:last-child { border-bottom: 0; }
+.eum-prog__label {
+  flex: 0 0 96px; font-size: 0.85rem;
+  color: var(--text); font-weight: 600;
+}
+.eum-prog__bar {
+  flex: 1; height: 6px;
+  background: var(--bg-soft); border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.eum-prog__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--blue));
+  border-radius: var(--radius-pill);
+}
+.eum-prog__value {
+  flex: 0 0 44px; text-align: right; font-size: 0.85rem;
+  font-weight: 700; color: var(--text);
+}
+
+/* ─── 빠른 실행 ────────────────────────────────────── */
+.eum-quick {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.eum-quick__btn {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 14px 8px;
+  border-radius: var(--radius-card);
+  font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; text-align: center;
+  text-decoration: none;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.eum-quick__btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-strong);
+}
+.eum-quick__btn .ico { font-size: 1.2rem; line-height: 1; }
+
+/* ─── 리스트 ───────────────────────────────────────── */
+.eum-list { list-style: none; }
+.eum-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem; color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+.eum-list li:last-child { border-bottom: 0; }
+.eum-list .meta {
+  font-size: 0.85rem; color: var(--text-sub); margin-left: auto;
+}
+
+/* ─── 폼 ───────────────────────────────────────────── */
+.eum-c select,
+.eum-c input[type="text"], .eum-c input[type="search"],
+.eum-c input[type="date"], .eum-c input[type="tel"],
+.eum-c input[type="email"], .eum-c input[type="password"],
+.eum-c input[type="number"],
+.eum-c textarea {
+  background: var(--bg-input);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  padding: 9px 12px;
+  border-radius: var(--radius-btn);
+  font-size: 0.88rem;
+  font-family: inherit;
+  width: 100%;
+}
+.eum-c select:focus, .eum-c input:focus, .eum-c textarea:focus {
+  outline: 2px solid var(--teal); outline-offset: -1px;
+}
+.eum-c label {
+  font-size: 0.85rem; color: var(--text-sub);
+  display: block; margin-bottom: 4px;
+}
+.eum-c textarea { min-height: 80px; resize: vertical; }
+
+/* ─── 버튼 ─────────────────────────────────────────── */
+.eum-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 9px 14px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-soft);
+  color: var(--text);
+  border-radius: var(--radius-btn);
+  font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+  text-decoration: none;
+}
+.eum-btn:hover { background: var(--bg-card-hover); }
+.eum-btn--primary {
+  background: var(--teal); color: #0B1426; border-color: var(--teal);
+}
+.eum-btn--primary:hover { background: #6EE7D6; }
+.eum-btn--ghost {
+  background: transparent; color: var(--text-sub); border-color: var(--border);
+}
+.eum-btn--ghost:hover { color: var(--text); border-color: var(--border-strong); }
+.eum-btn--sm { padding: 6px 10px; font-size: 0.85rem; }
+
+/* ─── 뱃지 ─────────────────────────────────────────── */
+.eum-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px;
+  font-size: 0.85rem; font-weight: 600;
+  border-radius: var(--radius-pill);
+  background: var(--bg-soft); color: var(--text-sub);
+}
+.eum-badge.teal   { background: rgba(45,212,191,0.15); color: var(--teal); }
+.eum-badge.blue   { background: rgba(96,165,250,0.15); color: var(--blue); }
+.eum-badge.orange { background: rgba(251,146,60,0.15); color: var(--orange); }
+.eum-badge.red    { background: rgba(248,113,113,0.15); color: var(--red); }
+.eum-badge.green  { background: rgba(74,222,128,0.15); color: var(--green); }
+.eum-badge.purple { background: rgba(167,139,250,0.15); color: var(--purple); }
+
+/* ─── 학생 row ─────────────────────────────────────── */
+.eum-row-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-soft);
+  border-radius: var(--radius-btn);
+  margin-bottom: 6px;
+}
+.eum-row-item__avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.eum-row-item__main { flex: 1; min-width: 0; }
+.eum-row-item__name { font-weight: 700; font-size: 0.92rem; }
+.eum-row-item__sub {
+  font-size: 0.85rem; color: var(--text-sub); margin-top: 2px;
+}
+.eum-row-item__actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+/* ─── 빈 상태 ──────────────────────────────────────── */
+.eum-empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--text-sub);
+}
+.eum-empty .ico { font-size: 2rem; opacity: 0.4; margin-bottom: 6px; }
+.eum-empty .msg { font-size: 0.88rem; }
+.eum-empty .sub {
+  font-size: 0.85rem; color: var(--text-dim); margin-top: 4px;
+}
+
+/* ─── 출석 체크 ────────────────────────────────────── */
+.eum-att__grid { display: grid; gap: 6px; }
+.eum-att__row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  background: var(--bg-soft);
+  border-radius: var(--radius-btn);
+}
+.eum-att__row .name { flex: 1; font-weight: 600; font-size: 0.9rem; }
+.eum-att__row .states { display: flex; gap: 4px; }
+.eum-att__row .state {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-sub);
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem; font-weight: 600;
+  cursor: pointer;
+}
+.eum-att__row .state.on.attend { background: var(--green); color: #0B1426; border-color: var(--green); }
+.eum-att__row .state.on.online { background: var(--blue);  color: #0B1426; border-color: var(--blue); }
+.eum-att__row .state.on.absent { background: var(--red);   color: #0B1426; border-color: var(--red); }
+
+/* ─── 최근 8주 표 ───────────────────────────────────── */
+.eum-8w { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.eum-8w th, .eum-8w td {
+  padding: 6px; text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.eum-8w th { color: var(--text-sub); font-weight: 600; }
+.eum-8w td:first-child, .eum-8w th:first-child {
+  text-align: left; font-weight: 600; color: var(--text);
+}
+
+/* ─── 하단 탭 (5개) ────────────────────────────────── */
+.eum-bot {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 30;
+  padding: 6px 0 max(6px, env(safe-area-inset-bottom));
+}
+.eum-bot a {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 4px 0;
+  color: var(--text-dim);
+  font-size: 0.85rem; font-weight: 700;
+}
+.eum-bot a .ico { font-size: 1.2rem; line-height: 1; display: flex; align-items: center; justify-content: center; height: 20px; }
+.eum-bot a .ico svg { display: block; }
+.eum-bot a.on { color: var(--teal); }
+
+/* ─── 데스크톱 ─────────────────────────────────────── */
+@media (min-width: 800px) {
+  .eum-main { padding: 16px; }
+  .eum-kpis { grid-template-columns: repeat(6, 1fr); }
+  .eum-quick { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* ─── 이음 패밀리 푸터 ─────────────────────────────── */
+.eum-family {
+  margin-top: 32px;
+  margin-bottom: 16px;
+  background: linear-gradient(150deg, #0d1b3e 0%, #1a1050 50%, #1e3a8a 100%);
+  border: 1px solid rgba(252, 211, 77, 0.25);
+  box-shadow: 0 8px 28px rgba(13, 27, 62, 0.45);
+  border-radius: 16px;
+  padding: 16px;
+  color: #fff;
+  text-align: left;
+}
+.eum-family-header {
+  margin-bottom: 12px;
+}
+.eum-family-title {
+  font-size: 15px;
+  font-weight: 900;
+  margin: 0 0 4px 0;
+  background: linear-gradient(135deg, #fef3c7 0%, #C9962B 50%, #8A6D1F 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.eum-family-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.45;
+  margin: 0;
+}
+.eum-family-contact {
+  margin: 12px 0 0 0;
+  text-align: center;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.55);
+}
+.eum-family-contact a {
+  color: rgba(252, 211, 77, 0.9);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.eum-family-grid {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  grid-template-columns: repeat(5, 1fr);
+}
+@media (max-width: 640px) {
+  .eum-family-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.eum-family-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px 8px;
+  border-radius: 12px;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  opacity: 1;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  height: 100%;
+}
+.eum-family-card.is-current {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  opacity: 0.45;
+  cursor: default;
+}
+.eum-family-card.is-coming-soon {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.eum-family-card:not(.is-current):not(.is-coming-soon):hover {
+  transform: scale(1.03);
+}
+.eum-family-card:not(.is-current):not(.is-coming-soon):active {
+  transform: scale(0.97);
+}
+.eum-family-emoji {
+  font-size: 24px;
+  margin-bottom: 4px;
+  line-height: 1;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", emoji;
+}
+.eum-family-name {
+  font-weight: 900;
+  font-size: 11px;
+  color: #fff;
+  line-height: 1.2;
+  margin: 0;
+}
+.eum-family-tag {
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 4px 0 0 0;
+  line-height: 1.35;
+}
+.eum-family-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 9px;
+  font-weight: 700;
+}

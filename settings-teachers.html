@@ -1,0 +1,813 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0B1426" />
+<title>이음 교회학교 — 교사 설정</title>
+<link rel="stylesheet" href="./static/eum-shell-v2.css" />
+<style>
+  /* ─── 부서 그룹 ─── */
+  .dept-group {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .dept-group__head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+  }
+  .dept-group__name { flex: 1; font-weight: 700; font-size: 0.95rem; }
+  .dept-group__count {
+    font-size: 0.85rem; color: var(--text-sub);
+    padding: 2px 8px; background: var(--bg-soft);
+    border-radius: var(--radius-pill);
+  }
+  .dept-group__body { padding: 6px 8px; }
+
+  /* ─── 교사 한 줄 (접힘) ─── */
+  .teacher-row {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-btn);
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  .teacher-row:hover { border-color: var(--border-strong); }
+  .teacher-row.open { border-color: var(--teal); }
+  .teacher-row__head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 12px;
+  }
+  .teacher-row__name { font-weight: 700; font-size: 0.9rem; }
+  .teacher-row__chips { display: flex; gap: 3px; flex-wrap: wrap; }
+  .teacher-row__chips .eum-badge { font-size: 0.85rem; padding: 1px 6px; }
+  .teacher-row__scope {
+    margin-left: auto; font-size: 0.85rem; color: var(--text-sub);
+    text-align: right;
+  }
+  .teacher-row__phone-actions {
+    display: flex; gap: 3px; flex-shrink: 0;
+  }
+  .teacher-row__phone-actions .eum-btn {
+    padding: 3px 7px; font-size: 0.85rem;
+  }
+  .teacher-row__caret {
+    font-size: 0.85rem; color: var(--text-dim); margin-left: 2px;
+  }
+  .teacher-row.open .teacher-row__caret { color: var(--teal); transform: rotate(180deg); }
+
+  /* ─── 교사 상세 (펼침) ─── */
+  .teacher-row__body {
+    display: none;
+    padding: 10px 12px 12px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-soft);
+  }
+  .teacher-row.open .teacher-row__body { display: block; }
+  .teacher-row.inactive { opacity: 0.55; }
+
+  .form-line { margin-bottom: 8px; }
+  .form-line label.lbl {
+    display: block; font-size: 0.85rem;
+    color: var(--text-sub); margin-bottom: 3px;
+  }
+  .form-line input[type="text"], .form-line input[type="email"], .form-line input[type="tel"] {
+    padding: 6px 8px; font-size: 0.85rem;
+  }
+
+  /* ─── 권한 묶음 칩 ─── */
+  .role-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 4px;
+  }
+  .role-chip {
+    display: flex; flex-direction: column;
+    padding: 8px 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .role-chip input { display: none; }
+  .role-chip .role-name {
+    font-size: 0.85rem; font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .role-chip .role-desc {
+    font-size: 0.85rem; color: var(--text-sub); margin-top: 2px;
+  }
+  .role-chip.on { background: rgba(45,212,191,0.12); border-color: var(--teal); }
+  .role-chip.on .role-name { color: var(--teal); }
+  .role-chip.on .role-name::before { content: "✓ "; }
+
+  /* ─── 부서·반 배정 칩 ─── */
+  .scope-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; margin: 2px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    font-size: 0.85rem; cursor: pointer;
+  }
+  .scope-chip input { width: 14px; height: 14px; margin: 0; }
+  .scope-chip.on { background: rgba(96,165,250,0.15); border-color: var(--blue); color: var(--blue); font-weight: 700; }
+  .scope-chip.disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .scope-subgroup {
+    border-left: 2px solid var(--border);
+    padding: 4px 0 4px 8px;
+    margin-bottom: 4px;
+  }
+  .scope-subgroup__head {
+    font-size: 0.85rem; font-weight: 600;
+    color: var(--text-sub); margin-bottom: 2px;
+  }
+
+  .add-teacher-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px dashed var(--border-strong);
+    color: var(--text-sub);
+    padding: 8px;
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: inherit;
+  }
+  .add-teacher-btn:hover { color: var(--teal); border-color: var(--teal); }
+</style>
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:9999;background:#F0C24B;color:#1A1400;text-align:center;padding:6px 10px;font-size:12.5px;font-weight:700;font-family:sans-serif;">데모 화면 — 실제 데이터가 아닌 샘플 데이터로 동작합니다</div>
+
+<main class="eum-main">
+
+  <!-- 안내 -->
+  <section class="eum-c">
+    <h2>👨‍🏫 교사 설정</h2>
+    <p class="hint">
+      관리자만 사용할 수 있습니다. <strong>전화번호가 로그인 ID로 사용됩니다</strong> (이메일은 선택).
+      부서 안 「＋ 교사 추가」를 누르면 그 부서의 「반 담당」 권한으로 자동 시작됩니다.
+      교사 행을 클릭하면 펼쳐 편집할 수 있습니다.
+    </p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top: 8px;">
+      <button class="eum-btn eum-btn--ghost" id="btn-toggle-inactive">사용 안 함 보기</button>
+      <button class="eum-btn eum-btn--ghost" id="btn-expand-all">모두 펼치기</button>
+      <button class="eum-btn eum-btn--ghost" id="btn-refresh">새로고침</button>
+    </div>
+  </section>
+
+  <!-- 권한 안내 -->
+  <section class="eum-c">
+    <h2>ℹ 권한 묶음 안내 (중복 가능)</h2>
+    <ul class="eum-list">
+      <li>
+        <span class="eum-badge teal">교회 전체</span>
+        <span>교회·부서·교사 전체 관리, 백업/내보내기. 모든 부서·반 자동 접근.</span>
+      </li>
+      <li>
+        <span class="eum-badge blue">부서장</span>
+        <span>맡은 부서 안의 반·교사·학생 관리. 부서 배정 필요.</span>
+      </li>
+      <li>
+        <span class="eum-badge purple">반 담당</span>
+        <span>맡은 반의 학생만 출석·돌봄 입력. 반 배정 필요.</span>
+      </li>
+    </ul>
+    <p class="hint" style="margin-top:8px; padding-top:8px; border-top: 1px solid var(--border);">
+      🔐 <strong>로그인은 전화번호 기준</strong>입니다. 새로 추가된 교사는 같은 전화번호로 Supabase Auth에 가입해야 실제 로그인 가능합니다.
+      이메일은 선택입니다.
+    </p>
+  </section>
+
+  <!-- 부서 그룹 + 교사 -->
+  <div id="dept-groups">
+    <div class="eum-empty"><div class="msg">불러오는 중…</div></div>
+  </div>
+
+  <!-- 부서 미배정 (전체 권한만 가진 교사) -->
+  <div id="unassigned-group"></div>
+
+</main>
+
+<script src="./static/data.js"></script>
+<script src="./static/eum-shell-v2.js"></script>
+<script>
+(async function () {
+  if (!(await EumShell.guard())) return;
+
+  var me = await Eum.me(true);
+  if (!me) {
+    document.body.innerHTML = '<p style="padding:40px; text-align:center;">로그인이 필요합니다.</p>';
+    return;
+  }
+
+  EumShell.mount({
+    pageId: "all", title: "이음 교회학교",
+    church: me.church.name, dept: ""
+  });
+
+  // 권한: admin만
+  if (!Eum.hasRole(me, "admin")) {
+    document.querySelector("main").innerHTML =
+      '<section class="eum-c"><div class="eum-empty">' +
+      '<div class="ico">🔒</div>' +
+      '<div class="msg">관리자만 사용할 수 있습니다</div>' +
+      '<div class="sub">「교회 전체」 권한이 필요합니다.</div>' +
+      '</div></section>';
+    return;
+  }
+
+  var churchId = me.church.id;
+  var ROLES = ["admin", "manager", "operator"];
+  var ROLE_LABELS = { admin: "교회 전체", manager: "부서장", operator: "반 담당" };
+  var ROLE_DESCS = {
+    admin:    "교회·부서·교사 전체 + 백업/내보내기",
+    manager:  "맡은 부서 안의 반·교사·학생 관리",
+    operator: "맡은 반의 학생 출석·돌봄 입력"
+  };
+
+  var state = {
+    depts: [],            // [{id, name, is_active, sort_order, ...}]
+    classes: [],          // [{id, department_id, name, is_active, ...}]
+    teachers: [],         // [{id, name, phone, email, roles[], isActive, departmentIds[], classIds[]}]
+    showInactive: false,
+    expandedIds: new Set()
+  };
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;");
+  }
+
+  // E.164(+821012345678) → 010-1234-5678 표시용
+  function displayPhone(p) {
+    if (!p) return "";
+    var s = String(p).replace(/\s|-/g, "");
+    if (s.startsWith("+82")) s = "0" + s.substring(3);
+    var d = s.replace(/\D/g, "");
+    if (d.length === 11) return d.substring(0,3) + "-" + d.substring(3,7) + "-" + d.substring(7);
+    if (d.length === 10) return d.substring(0,3) + "-" + d.substring(3,6) + "-" + d.substring(6);
+    return p;
+  }
+
+  function deptsActive() {
+    return state.depts
+      .filter(function (d) { return d.is_active; })
+      .sort(function (a, b) { return a.sort_order - b.sort_order; });
+  }
+  function classesOf(deptId) {
+    return state.classes
+      .filter(function (c) { return c.department_id === deptId && c.is_active; })
+      .sort(function (a, b) { return a.sort_order - b.sort_order; });
+  }
+
+  // 교사가 어느 부서에 속하는지 — manager 배정 우선, 없으면 operator 배정의 부서, 둘 다 없으면 unassigned
+  function deptOfTeacher(t) {
+    if (t.departmentIds && t.departmentIds.length) return t.departmentIds[0];
+    if (t.classIds && t.classIds.length) {
+      var c = state.classes.find(function (x) { return x.id === t.classIds[0]; });
+      if (c) return c.department_id;
+    }
+    return null;
+  }
+
+  // 권한 변경에 따른 자동 셋팅 (클라이언트 상태만 — 저장은 호출자가)
+  function autoApply(t) {
+    if (t.roles.indexOf("admin") >= 0) {
+      // admin → 모든 active 부서·반 자동 선택
+      t.departmentIds = state.depts.filter(function (d) { return d.is_active; }).map(function (d) { return d.id; });
+      t.classIds = state.classes.filter(function (c) { return c.is_active; }).map(function (c) { return c.id; });
+    }
+    if (t.roles.indexOf("manager") >= 0 && t.roles.indexOf("operator") < 0) {
+      // manager 있는데 operator 없으면 추가 (부서장은 보통 반도 맡음)
+      t.roles.push("operator");
+    }
+  }
+
+  function summaryOf(t) {
+    var chips = ROLES.filter(function (r) { return t.roles.indexOf(r) >= 0; }).map(function (r) {
+      var cls = r === "admin" ? "teal" : (r === "manager" ? "blue" : "purple");
+      return '<span class="eum-badge ' + cls + '">' + ROLE_LABELS[r] + '</span>';
+    }).join(" ");
+
+    var scope = "";
+    if (t.roles.indexOf("admin") >= 0) {
+      scope = "전 범위";
+    } else {
+      var classNames = t.classIds
+        .map(function (cid) { return state.classes.find(function (c) { return c.id === cid; }); })
+        .filter(Boolean).map(function (c) { return c.name; });
+      var deptNames = t.departmentIds
+        .map(function (did) { return state.depts.find(function (d) { return d.id === did; }); })
+        .filter(Boolean).map(function (d) { return d.name; });
+      if (classNames.length) {
+        scope = (deptNames[0] ? deptNames[0] + " · " : "") + classNames.join(", ");
+      } else if (deptNames.length) {
+        scope = deptNames.join(", ") + " (부서 전체)";
+      } else {
+        scope = '<span style="color:var(--orange)">배정 없음</span>';
+      }
+    }
+    return { chips: chips, scope: scope };
+  }
+
+  function renderRow(t) {
+    var open = state.expandedIds.has(t.id);
+    var sum = summaryOf(t);
+    var isAdminOnly = t.roles.length === 1 && t.roles[0] === "admin";
+
+    var roleChips = ROLES.map(function (r) {
+      var on = t.roles.indexOf(r) >= 0;
+      return '<label class="role-chip' + (on ? ' on' : '') + '">' +
+               '<input type="checkbox" data-act="role" data-tid="' + esc(t.id) + '" data-r="' + r + '"' +
+                 (on ? ' checked' : '') + ' />' +
+               '<span class="role-name">' + ROLE_LABELS[r] + '</span>' +
+               '<span class="role-desc">' + ROLE_DESCS[r] + '</span>' +
+             '</label>';
+    }).join("");
+
+    var deptDisabled = t.roles.indexOf("admin") >= 0;
+    var deptChips = deptsActive().map(function (d) {
+      var on = t.departmentIds.indexOf(d.id) >= 0;
+      return '<label class="scope-chip' + (on ? ' on' : '') + (deptDisabled ? ' disabled' : '') + '">' +
+               '<input type="checkbox" data-act="dept" data-tid="' + esc(t.id) + '" data-did="' + esc(d.id) + '"' +
+                 (on ? ' checked' : '') + (deptDisabled ? ' disabled' : '') + ' />' +
+               esc(d.name) +
+             '</label>';
+    }).join("");
+
+    var classGroups = deptsActive().map(function (d) {
+      var deptOn = t.departmentIds.indexOf(d.id) >= 0;
+      var classes = classesOf(d.id);
+      if (!classes.length) return "";
+      var classDisabled = !deptOn && !deptDisabled;
+      var chips = classes.map(function (c) {
+        var on = t.classIds.indexOf(c.id) >= 0;
+        return '<label class="scope-chip' + (on ? ' on' : '') + (classDisabled ? ' disabled' : '') + '">' +
+                 '<input type="checkbox" data-act="class" data-tid="' + esc(t.id) + '" data-cid="' + esc(c.id) + '"' +
+                   (on ? ' checked' : '') + (classDisabled ? ' disabled' : '') + ' />' +
+                 esc(c.name) +
+               '</label>';
+      }).join("");
+      return '<div class="scope-subgroup">' +
+               '<div class="scope-subgroup__head">' + esc(d.name) +
+                 (classDisabled ? ' <span class="hint">— 부서 선택 후 활성화</span>' : '') +
+               '</div>' +
+               '<div>' + chips + '</div>' +
+             '</div>';
+    }).join("");
+
+    var phoneDisplay = displayPhone(t.phone);
+    var phoneActions = t.phone ?
+      '<a class="eum-btn eum-btn--sm" href="tel:' + esc(t.phone) + '" onclick="event.stopPropagation()" title="전화">📞</a>' +
+      '<a class="eum-btn eum-btn--sm" href="sms:' + esc(t.phone) + '" onclick="event.stopPropagation()" title="문자">💬</a>'
+      : '';
+
+    return '<div class="teacher-row' + (open ? ' open' : '') + (t.isActive ? '' : ' inactive') + '" data-tid="' + esc(t.id) + '">' +
+             '<div class="teacher-row__head" data-act="toggle" data-tid="' + esc(t.id) + '">' +
+               '<div class="teacher-row__name">' + esc(t.name) + '</div>' +
+               '<div class="teacher-row__chips">' + sum.chips + '</div>' +
+               '<div class="teacher-row__scope">' + sum.scope + '</div>' +
+               '<div class="teacher-row__phone-actions">' + phoneActions + '</div>' +
+               '<div class="teacher-row__caret">▾</div>' +
+             '</div>' +
+             '<div class="teacher-row__body" onclick="event.stopPropagation()">' +
+               '<div class="form-line">' +
+                 '<label class="lbl">이름</label>' +
+                 '<input type="text" value="' + esc(t.name) + '" data-act="edit-name" data-tid="' + esc(t.id) + '" />' +
+               '</div>' +
+               '<div class="form-line">' +
+                 '<label class="lbl">전화번호 (로그인 ID · 비상 연락)</label>' +
+                 '<input type="tel" value="' + esc(phoneDisplay) + '" placeholder="010-0000-0000" data-act="edit-phone" data-tid="' + esc(t.id) + '" />' +
+                 '<div class="hint" style="margin-top:3px;">로그인은 이 번호로 합니다. 같은 번호로 Supabase Auth에 가입돼 있어야 실제 로그인 가능.</div>' +
+               '</div>' +
+               '<div class="form-line">' +
+                 '<label class="lbl">이메일 <span style="color:var(--text-dim); font-weight:400;">(선택, 알림·리포트 받기에 사용)</span></label>' +
+                 '<input type="email" value="' + esc(t.email || "") + '" placeholder="비워둘 수 있습니다" data-act="edit-email" data-tid="' + esc(t.id) + '" />' +
+               '</div>' +
+               '<div class="form-line">' +
+                 '<label class="lbl">권한 묶음</label>' +
+                 '<div class="role-grid">' + roleChips + '</div>' +
+               '</div>' +
+               (isAdminOnly ?
+                 '<p class="hint">「교회 전체」 권한만 가진 사용자는 부서·반 자동 전체 접근입니다.</p>'
+                 : (
+                   '<div class="form-line">' +
+                     '<label class="lbl">부서 배정 (부서장 권한 시 적용)' +
+                       (deptDisabled ? ' — 전체 권한이므로 자동' : '') +
+                     '</label>' +
+                     '<div>' + deptChips + '</div>' +
+                   '</div>' +
+                   '<div class="form-line">' +
+                     '<label class="lbl">반 배정 (반 담당 권한 시 적용)</label>' +
+                     '<div>' + classGroups + '</div>' +
+                   '</div>'
+                 )) +
+               '<div style="display:flex; gap:8px; margin-top: 8px;">' +
+                 '<button class="eum-btn eum-btn--sm eum-btn--ghost" data-act="toggle-active" data-tid="' + esc(t.id) + '">' +
+                   (t.isActive ? '사용 안 함' : '다시 사용') +
+                 '</button>' +
+               '</div>' +
+             '</div>' +
+           '</div>';
+  }
+
+  function render() {
+    var teachers = state.teachers.filter(function (t) { return state.showInactive || t.isActive; });
+
+    var groups = {};
+    var unassigned = [];
+
+    teachers.forEach(function (t) {
+      var isAdminOnly = t.roles.length === 1 && t.roles[0] === "admin";
+      if (isAdminOnly) { unassigned.push(t); return; }
+
+      var did = deptOfTeacher(t);
+      if (did == null) { unassigned.push(t); return; }
+      if (!groups[did]) groups[did] = [];
+      groups[did].push(t);
+    });
+
+    var deptHtml = deptsActive().map(function (d) {
+      var list = groups[d.id] || [];
+      var rows = list.length
+        ? list.map(renderRow).join("")
+        : '<div class="eum-empty" style="padding: 14px;">' +
+            '<div class="msg" style="font-size: 0.85rem;">아직 교사가 없습니다</div>' +
+          '</div>';
+      return '<div class="dept-group">' +
+               '<div class="dept-group__head">' +
+                 '<div class="dept-group__name">🏛 ' + esc(d.name) + '</div>' +
+                 '<span class="dept-group__count">' + list.length + '명</span>' +
+               '</div>' +
+               '<div class="dept-group__body">' +
+                 rows +
+                 '<button class="add-teacher-btn" data-act="add-here" data-did="' + esc(d.id) + '">＋ 이 부서에 교사 추가</button>' +
+               '</div>' +
+             '</div>';
+    }).join("");
+    document.getElementById("dept-groups").innerHTML = deptHtml ||
+      '<div class="eum-empty"><div class="msg">활성 부서가 없습니다</div><div class="sub">먼저 「부서·반 설정」에서 부서를 추가해 주세요</div></div>';
+
+    var unHtml = "";
+    if (unassigned.length || state.showInactive) {
+      unHtml = '<div class="dept-group">' +
+                 '<div class="dept-group__head">' +
+                   '<div class="dept-group__name">🌐 부서 미배정 (전체 권한)</div>' +
+                   '<span class="dept-group__count">' + unassigned.length + '명</span>' +
+                 '</div>' +
+                 '<div class="dept-group__body">' +
+                   (unassigned.length ? unassigned.map(renderRow).join("") :
+                     '<div class="eum-empty" style="padding: 12px;"><div class="msg" style="font-size: 0.85rem;">없음</div></div>') +
+                   '<button class="add-teacher-btn" data-act="add-here" data-did="ALL">＋ 전체 권한 교사 추가</button>' +
+                 '</div>' +
+               '</div>';
+    } else {
+      unHtml = '<div class="dept-group">' +
+                 '<div class="dept-group__head">' +
+                   '<div class="dept-group__name">🌐 전체 권한 교사 추가</div>' +
+                 '</div>' +
+                 '<div class="dept-group__body">' +
+                   '<button class="add-teacher-btn" data-act="add-here" data-did="ALL">＋ 전체 권한 교사 추가</button>' +
+                 '</div>' +
+               '</div>';
+    }
+    document.getElementById("unassigned-group").innerHTML = unHtml;
+
+    bind();
+  }
+
+  // ─── 변경 → 즉시 저장 헬퍼 ─────────────────────
+  async function saveTeacherCore(t) {
+    try {
+      await Data.teachers.update(t.id, {
+        name: t.name,
+        email: t.email,
+        roles: t.roles,
+        isActive: t.isActive
+      });
+    } catch (e) {
+      Data.toast("저장 실패: " + (e.message || e), "err");
+      throw e;
+    }
+  }
+  async function saveAssignments(t) {
+    try {
+      await Data.teacherDepartments.sync(t.id, t.departmentIds);
+      await Data.teacherClasses.sync(t.id, t.classIds);
+    } catch (e) {
+      Data.toast("배정 저장 실패: " + (e.message || e), "err");
+      throw e;
+    }
+  }
+
+  function bind() {
+    // 행 펼침 토글
+    document.querySelectorAll('[data-act="toggle"]').forEach(function (el) {
+      el.addEventListener("click", function () {
+        var id = el.getAttribute("data-tid");
+        if (state.expandedIds.has(id)) state.expandedIds.delete(id);
+        else state.expandedIds.add(id);
+        render();
+      });
+    });
+
+    // 이름
+    document.querySelectorAll('[data-act="edit-name"]').forEach(function (inp) {
+      var prev = inp.value;
+      inp.addEventListener("change", async function () {
+        var id = inp.getAttribute("data-tid");
+        var t = state.teachers.find(function (x) { return x.id === id; });
+        if (!t) return;
+        var val = inp.value.trim();
+        if (!val) { inp.value = prev; Data.toast("이름은 비울 수 없습니다", "err"); return; }
+        t.name = val;
+        try { await saveTeacherCore(t); Data.toast("저장됨", "ok"); render(); }
+        catch (_) { inp.value = prev; }
+      });
+    });
+
+    // 전화번호 — DB는 E.164, 표시는 010-xxxx-xxxx
+    document.querySelectorAll('[data-act="edit-phone"]').forEach(function (inp) {
+      var prev = inp.value;
+      inp.addEventListener("change", async function () {
+        var id = inp.getAttribute("data-tid");
+        var t = state.teachers.find(function (x) { return x.id === id; });
+        if (!t) return;
+        var raw = inp.value.trim();
+        if (!raw) { inp.value = prev; Data.toast("전화번호는 비울 수 없습니다 (로그인 ID)", "err"); return; }
+        var normalized = Eum.normalizePhone(raw);
+        if (normalized === t.phone) { return; } // 변경 없음
+
+        // 본인 phone 변경 시 락아웃 위험 안내
+        if (t.id === me.teacherId) {
+          var ok = confirm(
+            "본인의 로그인 전화번호를 바꾸려고 합니다.\n\n" +
+            "Supabase Auth Users의 전화번호도 함께 바꿔야 다음 로그인이 가능합니다.\n" +
+            "지금 진행할까요?"
+          );
+          if (!ok) { inp.value = prev; return; }
+        }
+
+        try {
+          await Data.teachers.update(t.id, { phone: normalized });
+          t.phone = normalized;
+          Data.toast("저장됨", "ok");
+          render();
+        } catch (e) {
+          inp.value = prev;
+          var msg = e.message || String(e);
+          if (msg.indexOf("duplicate") >= 0 || msg.indexOf("unique") >= 0) {
+            Data.toast("같은 전화번호의 교사가 이미 있습니다. 다른 번호로 입력해 주세요.", "err");
+          } else {
+            Data.toast("저장 실패: " + msg, "err");
+          }
+        }
+      });
+    });
+
+    // 이메일
+    document.querySelectorAll('[data-act="edit-email"]').forEach(function (inp) {
+      var prev = inp.value;
+      inp.addEventListener("change", async function () {
+        var id = inp.getAttribute("data-tid");
+        var t = state.teachers.find(function (x) { return x.id === id; });
+        if (!t) return;
+        t.email = inp.value.trim();
+        try { await saveTeacherCore(t); Data.toast("저장됨", "ok"); }
+        catch (_) { inp.value = prev; }
+      });
+    });
+
+    // 권한 묶음
+    document.querySelectorAll('[data-act="role"]').forEach(function (cb) {
+      cb.addEventListener("change", async function () {
+        var id = cb.getAttribute("data-tid");
+        var r = cb.getAttribute("data-r");
+        var t = state.teachers.find(function (x) { return x.id === id; });
+        if (!t) return;
+        var prev = {
+          roles: t.roles.slice(),
+          departmentIds: t.departmentIds.slice(),
+          classIds: t.classIds.slice()
+        };
+        // 자기 자신의 admin 권한 해제 차단 — 락아웃 방지
+        if (!cb.checked && r === "admin" && t.id === me.teacherId) {
+          cb.checked = true;
+          Data.toast("본인의 「교회 전체」 권한은 해제할 수 없습니다 (락아웃 방지). 다른 관리자에게 부탁하세요.", "err");
+          return;
+        }
+        if (cb.checked) {
+          if (t.roles.indexOf(r) < 0) t.roles.push(r);
+        } else {
+          t.roles = t.roles.filter(function (x) { return x !== r; });
+        }
+        if (!t.roles.length) {
+          // 권한이 모두 없으면 다시 되돌림 — 1개 이상 필수 (CHECK 제약)
+          t.roles = prev.roles; t.departmentIds = prev.departmentIds; t.classIds = prev.classIds;
+          Data.toast("권한은 1개 이상 필요합니다. 다른 권한을 먼저 추가한 뒤 해제하세요.", "err");
+          render();
+          return;
+        }
+        autoApply(t);
+        try {
+          await saveTeacherCore(t);
+          await saveAssignments(t);
+          Data.toast("저장됨", "ok");
+          render();
+        } catch (_) {
+          t.roles = prev.roles; t.departmentIds = prev.departmentIds; t.classIds = prev.classIds;
+          render();
+        }
+      });
+    });
+
+    // 부서 배정
+    document.querySelectorAll('[data-act="dept"]').forEach(function (cb) {
+      cb.addEventListener("change", async function () {
+        var tid = cb.getAttribute("data-tid");
+        var did = cb.getAttribute("data-did");
+        var t = state.teachers.find(function (x) { return x.id === tid; });
+        if (!t) return;
+        var prev = { departmentIds: t.departmentIds.slice(), classIds: t.classIds.slice() };
+        if (cb.checked) {
+          if (t.departmentIds.indexOf(did) < 0) t.departmentIds.push(did);
+        } else {
+          t.departmentIds = t.departmentIds.filter(function (x) { return x !== did; });
+          // 부서 해제 시 그 부서의 반들도 자동 제거
+          t.classIds = t.classIds.filter(function (cid) {
+            var c = state.classes.find(function (x) { return x.id === cid; });
+            return !c || c.department_id !== did;
+          });
+        }
+        try {
+          await saveAssignments(t);
+          Data.toast("저장됨", "ok");
+          render();
+        } catch (_) {
+          t.departmentIds = prev.departmentIds; t.classIds = prev.classIds;
+          render();
+        }
+      });
+    });
+
+    // 반 배정
+    document.querySelectorAll('[data-act="class"]').forEach(function (cb) {
+      cb.addEventListener("change", async function () {
+        var tid = cb.getAttribute("data-tid");
+        var cid = cb.getAttribute("data-cid");
+        var t = state.teachers.find(function (x) { return x.id === tid; });
+        if (!t) return;
+        var prev = { departmentIds: t.departmentIds.slice(), classIds: t.classIds.slice() };
+        if (cb.checked) {
+          if (t.classIds.indexOf(cid) < 0) t.classIds.push(cid);
+          var c = state.classes.find(function (x) { return x.id === cid; });
+          if (c && t.departmentIds.indexOf(c.department_id) < 0) {
+            t.departmentIds.push(c.department_id);
+          }
+        } else {
+          t.classIds = t.classIds.filter(function (x) { return x !== cid; });
+        }
+        try {
+          await saveAssignments(t);
+          Data.toast("저장됨", "ok");
+          render();
+        } catch (_) {
+          t.departmentIds = prev.departmentIds; t.classIds = prev.classIds;
+          render();
+        }
+      });
+    });
+
+    // 활성/비활성
+    document.querySelectorAll('[data-act="toggle-active"]').forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        var id = btn.getAttribute("data-tid");
+        var t = state.teachers.find(function (x) { return x.id === id; });
+        if (!t) return;
+        // 자기 자신 비활성화 차단 — 락아웃 방지
+        if (t.isActive && t.id === me.teacherId) {
+          Data.toast("본인 계정은 사용 안 함으로 바꿀 수 없습니다 (락아웃 방지). 다른 관리자에게 부탁하세요.", "err");
+          return;
+        }
+        var prev = t.isActive;
+        t.isActive = !t.isActive;
+        try {
+          await Data.teachers.update(t.id, { isActive: t.isActive });
+          Data.toast(t.isActive ? "다시 사용으로 변경" : "사용 안 함으로 변경", "ok");
+          render();
+        } catch (e) {
+          t.isActive = prev;
+          Data.toast("실패: " + (e.message || e), "err");
+        }
+      });
+    });
+
+    // 부서별 교사 추가
+    document.querySelectorAll('[data-act="add-here"]').forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        var did = btn.getAttribute("data-did"); // 'ALL' = 전체 권한
+        var name = prompt("교사 이름");
+        if (!name || !name.trim()) return;
+        var phone = prompt("전화번호 (로그인 ID로 사용됩니다, 예: 010-0000-0000)");
+        if (!phone || !phone.trim()) {
+          Data.toast("전화번호는 필수입니다 (로그인 ID)", "err");
+          return;
+        }
+        var email = prompt("이메일 (선택 — 비워둘 수 있습니다)") || "";
+
+        var roles, deptIds, classIds;
+        if (did === "ALL") {
+          roles = ["admin"];
+          deptIds = state.depts.filter(function (d) { return d.is_active; }).map(function (d) { return d.id; });
+          classIds = state.classes.filter(function (c) { return c.is_active; }).map(function (c) { return c.id; });
+        } else {
+          roles = ["operator"];
+          deptIds = [did];
+          classIds = [];
+        }
+
+        try {
+          // 1) teachers insert
+          var inserted = await Data.teachers.create(churchId, {
+            name: name, phone: phone, email: email, roles: roles, isActive: true
+          });
+          // 2) 부서·반 배정
+          if (deptIds.length) await Data.teacherDepartments.sync(inserted.id, deptIds);
+          if (classIds.length) await Data.teacherClasses.sync(inserted.id, classIds);
+
+          // 3) 화면 상태 갱신
+          state.teachers.push({
+            id: inserted.id,
+            userId: inserted.user_id,
+            name: inserted.name,
+            phone: inserted.phone,
+            email: inserted.email || "",
+            roles: inserted.roles,
+            isActive: inserted.is_active,
+            departmentIds: deptIds,
+            classIds: classIds
+          });
+          state.expandedIds.add(inserted.id);
+          Data.toast("교사 추가 완료", "ok");
+          render();
+        } catch (e) {
+          var msg = e.message || String(e);
+          if (msg.indexOf("duplicate") >= 0 || msg.indexOf("unique") >= 0) {
+            Data.toast("이미 같은 전화번호의 교사가 있습니다", "err");
+          } else {
+            Data.toast("추가 실패: " + msg, "err");
+          }
+        }
+      });
+    });
+  }
+
+  // 상단 버튼들
+  document.getElementById("btn-toggle-inactive").addEventListener("click", function () {
+    state.showInactive = !state.showInactive;
+    this.textContent = state.showInactive ? "활성만 보기" : "사용 안 함 보기";
+    render();
+  });
+  document.getElementById("btn-expand-all").addEventListener("click", function () {
+    if (state.expandedIds.size > 0) {
+      state.expandedIds.clear();
+      this.textContent = "모두 펼치기";
+    } else {
+      state.teachers.forEach(function (t) { state.expandedIds.add(t.id); });
+      this.textContent = "모두 접기";
+    }
+    render();
+  });
+  document.getElementById("btn-refresh").addEventListener("click", function () { refresh(); });
+
+  async function refresh() {
+    try {
+      state.depts    = await Data.departments.list(true);
+      state.classes  = await Data.classes.list(true);
+      state.teachers = await Data.teachers.listAll(true);
+      render();
+    } catch (e) {
+      console.error(e);
+      Data.toast("불러오기 실패: " + (e.message || e), "err");
+      document.getElementById("dept-groups").innerHTML =
+        '<div class="eum-empty"><div class="ico">⚠</div>' +
+        '<div class="msg">데이터를 불러올 수 없습니다</div>' +
+        '<div class="sub">' + esc(e.message || String(e)) + '</div></div>';
+    }
+  }
+
+  await refresh();
+})();
+</script>
+</body>
+</html>

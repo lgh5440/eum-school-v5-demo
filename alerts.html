@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0B1426" />
+<title>이음 교회학교 — 돌봄</title>
+<link rel="stylesheet" href="./static/eum-shell-v2.css" />
+<style>
+  .filter-tabs {
+    display: flex; gap: 4px;
+    background: var(--bg-input);
+    padding: 3px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 10px;
+  }
+  .filter-tabs button {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    color: var(--text-sub);
+    padding: 6px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .filter-tabs button.on {
+    background: var(--bg-card);
+    color: var(--teal);
+  }
+  .prayer-li {
+    align-items: flex-start !important;
+  }
+  .prayer-li .who-line {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 2px; flex-wrap: wrap;
+  }
+  .prayer-li .actions {
+    margin-left: auto; display: flex; gap: 4px;
+  }
+  .prayer-form {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-btn);
+    padding: 10px;
+    margin-top: 8px;
+  }
+  .prayer-form .radio-row {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px;
+  }
+  .prayer-form .radio-row label {
+    flex: 1; min-width: 90px;
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    font-size: 0.85rem;
+    cursor: pointer; margin: 0;
+    justify-content: center;
+  }
+  .prayer-form .radio-row label.on {
+    background: rgba(167,139,250,0.15);
+    border-color: var(--purple);
+    color: var(--purple);
+    font-weight: 700;
+  }
+  .prayer-form .radio-row input { display: none; }
+  .anon-toggle {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 10px;
+    background: var(--bg-input);
+    border-radius: var(--radius-btn);
+    font-size: 0.85rem;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+  .anon-toggle input { width: 16px; height: 16px; margin: 0; }
+
+  .care-form .form-grid {
+    display: grid; grid-template-columns: 2fr 1fr; gap: 6px;
+    margin-bottom: 8px;
+  }
+  @media (max-width: 480px) {
+    .care-form .form-grid { grid-template-columns: 1fr; }
+  }
+  .care-log-li { align-items: flex-start !important; }
+  .care-log-li .actions { margin-left: auto; display: flex; gap: 4px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:9999;background:#F0C24B;color:#1A1400;text-align:center;padding:6px 10px;font-size:12.5px;font-weight:700;font-family:sans-serif;">데모 화면 — 실제 데이터가 아닌 샘플 데이터로 동작합니다</div>
+
+<main class="eum-main">
+
+  <!-- 결석 학생 -->
+  <section class="eum-c">
+    <h2>💝 결석 학생 <span class="eum-badge" id="absent-count"></span></h2>
+    <p class="hint">최근 attend 이벤트가 없는 학생을 자동 계산합니다. 2주 이상 결석은 빨간 뱃지.</p>
+    <div style="display:flex; gap:8px; margin-bottom: 8px;">
+      <select id="absent-dept" style="flex:1"><option value="">— 전체 부서 —</option></select>
+      <button class="eum-btn eum-btn--ghost eum-btn--sm" id="btn-refresh-absent">새로고침</button>
+    </div>
+    <div id="absent-list">
+      <div class="eum-empty"><div class="msg">불러오는 중…</div></div>
+    </div>
+  </section>
+
+  <!-- 기도제목 -->
+  <section class="eum-c">
+    <h2>🙏 기도제목</h2>
+    <p class="hint">학생·가정뿐 아니라 교사 본인의 기도제목도 함께 나눌 수 있습니다. 익명으로 올릴 수 있습니다.</p>
+
+    <div class="filter-tabs">
+      <button class="on" data-filter="all">전체</button>
+      <button data-filter="student">학생·가정</button>
+      <button data-filter="teacher">교사·동역자</button>
+      <button data-filter="department">부서·전체</button>
+    </div>
+
+    <ul class="eum-list" id="prayer-list">
+      <li style="justify-content: center; color: var(--text-sub); font-size: 0.85rem;">불러오는 중…</li>
+    </ul>
+
+    <button class="eum-btn eum-btn--ghost" id="btn-toggle-form" style="margin-top: 8px; width: 100%;">
+      ＋ 기도제목 추가
+    </button>
+
+    <div class="prayer-form" id="prayer-form" style="display:none;">
+      <label style="font-size: 0.85rem; color:var(--text-sub); display:block;">기도 주체</label>
+      <div class="radio-row">
+        <label class="on"><input type="radio" name="subject" value="student" checked> 학생·가정</label>
+        <label><input type="radio" name="subject" value="teacher"> 교사·동역자</label>
+        <label><input type="radio" name="subject" value="department"> 부서·전체</label>
+      </div>
+
+      <label style="font-size: 0.85rem; color:var(--text-sub); display:block;">대상 이름</label>
+      <input type="text" id="p-who" placeholder="예: 이서연 가정 / 김교사 / 유년부" style="margin-bottom: 6px;" />
+
+      <label style="font-size: 0.85rem; color:var(--text-sub); display:block;">내용</label>
+      <textarea id="p-text" placeholder="기도제목 내용"></textarea>
+
+      <label class="anon-toggle">
+        <input type="checkbox" id="p-anon" />
+        <span>익명으로 올리기</span>
+        <span style="margin-left:auto; font-size: 0.85rem; color:var(--text-dim);">
+          이름이 「익명」/「익명 교사」로 보입니다
+        </span>
+      </label>
+
+      <div style="display:flex; gap: 6px;">
+        <button class="eum-btn eum-btn--primary" id="btn-save-prayer">저장</button>
+        <button class="eum-btn eum-btn--ghost" id="btn-cancel-prayer">취소</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 심방·돌봄 메모 -->
+  <section class="eum-c care-form">
+    <h2>📝 심방·돌봄 메모</h2>
+    <div class="form-grid">
+      <select id="care-student"><option value="">대상 학생 선택 (선택 사항)</option></select>
+      <label class="anon-toggle" style="margin: 0;">
+        <input type="checkbox" id="care-contacted" />
+        <span>연락 완료</span>
+      </label>
+    </div>
+    <textarea id="care-memo" placeholder="오늘 만난 학생·가정에 대한 짧은 기록"></textarea>
+    <div style="display:flex; gap: 8px; margin-top: 8px; align-items: center;">
+      <button class="eum-btn eum-btn--primary" id="btn-save-memo">저장</button>
+      <span class="hint" id="memo-msg"></span>
+    </div>
+
+    <h2 style="margin-top: 14px;">📋 최근 메모</h2>
+    <ul class="eum-list" id="care-list">
+      <li style="justify-content: center; color: var(--text-sub); font-size: 0.85rem;">불러오는 중…</li>
+    </ul>
+  </section>
+
+</main>
+
+<script src="./static/data.js"></script>
+<script src="./static/eum-shell-v2.js"></script>
+<script>
+(async function () {
+  if (!(await EumShell.guard())) return;
+
+  var me = await Eum.me(true);
+  if (!me) {
+    document.body.innerHTML = '<p style="padding:40px; text-align:center;">로그인이 필요합니다.</p>';
+    return;
+  }
+
+  EumShell.mount({
+    pageId: "alerts", title: "이음 교회학교",
+    church: me.church.name, dept: ""
+  });
+
+  var churchId = me.church.id;
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;");
+  }
+  function displayPhone(p) {
+    if (!p) return "";
+    var s = String(p).replace(/\s|-/g, "");
+    if (s.startsWith("+82")) s = "0" + s.substring(3);
+    var d = s.replace(/\D/g, "");
+    if (d.length === 11) return d.substring(0,3) + "-" + d.substring(3,7) + "-" + d.substring(7);
+    if (d.length === 10) return d.substring(0,3) + "-" + d.substring(3,6) + "-" + d.substring(6);
+    return p;
+  }
+
+  var state = {
+    depts: [], classes: [], students: [],
+    prayers: [], careLogs: [],
+    absentFilterDept: "",
+    prayerFilter: "all"
+  };
+
+  // ─── 결석 학생 계산 ────────────────────────────────
+  async function loadAbsent() {
+    var list = document.getElementById("absent-list");
+    list.innerHTML = '<div class="eum-empty"><div class="msg">불러오는 중…</div></div>';
+    try {
+      // 권한 기반으로 보이는 학생만
+      var visible = state.students.filter(function (s) {
+        if (!s.isActive) return false;
+        if (state.absentFilterDept && s.departmentId !== state.absentFilterDept) return false;
+        if (Eum.hasRole(me, "admin")) return true;
+        if (Eum.hasRole(me, "manager") && me.departmentIds.indexOf(s.departmentId) >= 0) return true;
+        if (Eum.hasRole(me, "operator") && me.classIds.indexOf(s.classId) >= 0) return true;
+        return false;
+      });
+
+      if (!visible.length) {
+        list.innerHTML = '<div class="eum-empty"><div class="msg">표시할 학생이 없습니다</div></div>';
+        document.getElementById("absent-count").textContent = "0명";
+        return;
+      }
+
+      var lastMap = await Data.events.lastAttendByStudent(visible.map(function (s) { return s.id; }));
+      var today = new Date();
+      var absentees = visible.map(function (s) {
+        var last = lastMap[s.id];
+        var weeksAgo;
+        if (!last) {
+          weeksAgo = 99; // 기록 없음
+        } else {
+          var diffDays = (today - new Date(last)) / (1000 * 60 * 60 * 24);
+          weeksAgo = Math.floor(diffDays / 7);
+        }
+        return { student: s, weeksAgo: weeksAgo, last: last };
+      })
+      .filter(function (x) { return x.weeksAgo >= 1; })
+      .sort(function (a, b) { return b.weeksAgo - a.weeksAgo; });
+
+      document.getElementById("absent-count").textContent = absentees.length + "명";
+
+      if (!absentees.length) {
+        list.innerHTML = '<div class="eum-empty"><div class="ico">🌱</div><div class="msg">최근 1주 안에 모두 출석했습니다</div><div class="sub">수고하셨습니다!</div></div>';
+        return;
+      }
+
+      list.innerHTML = absentees.map(function (x) {
+        var s = x.student;
+        var weekText = (x.weeksAgo >= 99) ? "기록 없음" : (x.weeksAgo + "주 결석");
+        var badge = x.weeksAgo >= 2
+          ? '<span class="eum-badge red">' + weekText + '</span>'
+          : '<span class="eum-badge orange">' + weekText + '</span>';
+        var parent = s.parent;
+        var phone = parent && parent.phone || "";
+        var parentLine = parent
+          ? "보호자 " + esc(parent.name) + (phone ? " · " + esc(displayPhone(phone)) : "")
+          : '<span class="hint">보호자 미등록</span>';
+        var phoneActions = phone
+          ? '<a class="eum-btn eum-btn--sm" href="tel:' + esc(phone) + '">📞</a>' +
+            '<a class="eum-btn eum-btn--sm" href="sms:' + esc(phone) + '">💬</a>'
+          : '';
+        return '<div class="eum-row-item">'
+             +   '<div class="eum-row-item__avatar">' + esc(s.name.substring(0, 1)) + '</div>'
+             +   '<div class="eum-row-item__main">'
+             +     '<div class="eum-row-item__name">' + esc(s.name) + ' ' + badge + '</div>'
+             +     '<div class="eum-row-item__sub">' + parentLine + '</div>'
+             +   '</div>'
+             +   '<div class="eum-row-item__actions">' + phoneActions + '</div>'
+             + '</div>';
+      }).join("");
+    } catch (e) {
+      console.error(e);
+      list.innerHTML = '<div class="eum-empty" style="color:var(--red)">불러오기 실패: ' + esc(e.message || String(e)) + '</div>';
+    }
+  }
+
+  // ─── 기도제목 ─────────────────────────────────────
+  function subjectBadge(type) {
+    if (type === "student")    return '<span class="eum-badge orange">학생·가정</span>';
+    if (type === "teacher")    return '<span class="eum-badge teal">교사</span>';
+    if (type === "department") return '<span class="eum-badge blue">부서·전체</span>';
+    return "";
+  }
+  function whoDisplay(p) {
+    if (!p.isAnonymous) return esc(p.who);
+    return p.subjectType === "teacher" ? "익명 교사"
+         : p.subjectType === "student" ? "익명 가정"
+         : "익명";
+  }
+
+  function renderPrayers() {
+    var items = state.prayers.slice();
+    if (state.prayerFilter !== "all") {
+      items = items.filter(function (p) { return p.subjectType === state.prayerFilter; });
+    }
+    var list = document.getElementById("prayer-list");
+    if (!items.length) {
+      list.innerHTML = '<li style="justify-content: center; color: var(--text-sub); font-size: 0.85rem;">기도제목이 없습니다</li>';
+      return;
+    }
+    list.innerHTML = items.map(function (p) {
+      var anon = p.isAnonymous
+        ? '<span class="eum-badge" style="background: rgba(248,113,113,0.15); color: var(--red);">익명</span>'
+        : '';
+      // 내 기록 또는 admin만 삭제 가능 (UX 단순화: admin만 노출)
+      var canDelete = Eum.hasRole(me, "admin") || p.recordedBy === me.userId;
+      var del = canDelete
+        ? '<button class="eum-btn eum-btn--sm eum-btn--ghost" data-act="del-prayer" data-id="' + esc(p.id) + '" title="삭제">✕</button>'
+        : '';
+      return '<li class="prayer-li">'
+           +   '<div style="flex:1; min-width:0;">'
+           +     '<div class="who-line">'
+           +       subjectBadge(p.subjectType) + anon
+           +       '<strong>' + whoDisplay(p) + '</strong>'
+           +       '<div class="actions">' + del + '</div>'
+           +     '</div>'
+           +     '<span class="hint">' + esc(p.body) + '</span>'
+           +   '</div>'
+           +   '<span class="meta">' + esc(p.occurredOn) + '</span>'
+           + '</li>';
+    }).join("");
+
+    list.querySelectorAll('[data-act="del-prayer"]').forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        if (!confirm("이 기도제목을 삭제할까요?")) return;
+        try {
+          await Data.prayers.remove(btn.getAttribute("data-id"));
+          state.prayers = state.prayers.filter(function (p) { return p.id !== btn.getAttribute("data-id"); });
+          Data.toast("삭제됨", "ok");
+          renderPrayers();
+        } catch (e) { Data.toast("삭제 실패: " + (e.message || e), "err"); }
+      });
+    });
+  }
+
+  // 필터 탭
+  document.querySelectorAll(".filter-tabs button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".filter-tabs button").forEach(function (x) { x.classList.remove("on"); });
+      b.classList.add("on");
+      state.prayerFilter = b.getAttribute("data-filter");
+      renderPrayers();
+    });
+  });
+
+  // 추가 폼 토글
+  var btnToggleForm = document.getElementById("btn-toggle-form");
+  btnToggleForm.addEventListener("click", function () {
+    var f = document.getElementById("prayer-form");
+    var open = f.style.display !== "none";
+    f.style.display = open ? "none" : "";
+    btnToggleForm.textContent = open ? "＋ 기도제목 추가" : "× 닫기";
+  });
+
+  // 주체 라디오 시각 표시
+  document.querySelectorAll('.radio-row input[type=radio]').forEach(function (r) {
+    r.addEventListener("change", function () {
+      document.querySelectorAll(".radio-row label").forEach(function (l) { l.classList.remove("on"); });
+      r.closest("label").classList.add("on");
+    });
+  });
+
+  // 저장
+  document.getElementById("btn-save-prayer").addEventListener("click", async function () {
+    var subject = document.querySelector('.radio-row input[type=radio]:checked').value;
+    var who = document.getElementById("p-who").value.trim();
+    var body = document.getElementById("p-text").value.trim();
+    var anon = document.getElementById("p-anon").checked;
+    if (!who || !body) {
+      Data.toast("대상 이름과 내용을 모두 입력해 주세요", "err");
+      return;
+    }
+    try {
+      var created = await Data.prayers.create(churchId, {
+        subjectType: subject, who: who, body: body, isAnonymous: anon
+      }, me.userId);
+      state.prayers.unshift({
+        id: created.id, subjectType: created.subject_type,
+        who: created.who, body: created.body, isAnonymous: created.is_anonymous,
+        occurredOn: created.occurred_on, recordedBy: created.recorded_by
+      });
+      document.getElementById("p-who").value = "";
+      document.getElementById("p-text").value = "";
+      document.getElementById("p-anon").checked = false;
+      document.getElementById("prayer-form").style.display = "none";
+      btnToggleForm.textContent = "＋ 기도제목 추가";
+      Data.toast("저장됨", "ok");
+      renderPrayers();
+    } catch (e) {
+      Data.toast("저장 실패: " + (e.message || e), "err");
+    }
+  });
+
+  document.getElementById("btn-cancel-prayer").addEventListener("click", function () {
+    document.getElementById("prayer-form").style.display = "none";
+    btnToggleForm.textContent = "＋ 기도제목 추가";
+  });
+
+  // ─── 심방·돌봄 메모 ──────────────────────────────
+  function renderCareLogs() {
+    var list = document.getElementById("care-list");
+    if (!state.careLogs.length) {
+      list.innerHTML = '<li style="justify-content: center; color: var(--text-sub); font-size: 0.85rem;">메모가 없습니다</li>';
+      return;
+    }
+    list.innerHTML = state.careLogs.slice(0, 20).map(function (c) {
+      var stu = c.studentId
+        ? (state.students.find(function (s) { return s.id === c.studentId; }) || { name: "(삭제된 학생)" })
+        : null;
+      var stuLine = stu ? '<span class="eum-badge purple">' + esc(stu.name) + '</span> ' : '';
+      var contacted = c.contacted ? '<span class="eum-badge green">연락 완료</span>' : '';
+      var canDelete = Eum.hasRole(me, "admin") || c.teacherId === me.teacherId;
+      var del = canDelete
+        ? '<button class="eum-btn eum-btn--sm eum-btn--ghost" data-act="del-care" data-id="' + esc(c.id) + '">✕</button>'
+        : '';
+      var toggleContact = canDelete
+        ? '<button class="eum-btn eum-btn--sm" data-act="toggle-contacted" data-id="' + esc(c.id) + '">' +
+          (c.contacted ? '연락 취소' : '연락 완료') + '</button>'
+        : '';
+      return '<li class="care-log-li">'
+           +   '<div style="flex:1; min-width:0;">'
+           +     '<div style="margin-bottom:2px;">' + stuLine + contacted + '</div>'
+           +     '<span class="hint">' + esc(c.notes) + '</span>'
+           +   '</div>'
+           +   '<div class="actions">'
+           +     '<span class="meta" style="margin-right:4px;">' + esc(c.occurredOn) + '</span>'
+           +     toggleContact + del
+           +   '</div>'
+           + '</li>';
+    }).join("");
+
+    list.querySelectorAll('[data-act="del-care"]').forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        if (!confirm("이 메모를 삭제할까요?")) return;
+        try {
+          var id = btn.getAttribute("data-id");
+          await Data.careLogs.remove(id);
+          state.careLogs = state.careLogs.filter(function (c) { return c.id !== id; });
+          Data.toast("삭제됨", "ok");
+          renderCareLogs();
+        } catch (e) { Data.toast("삭제 실패: " + (e.message || e), "err"); }
+      });
+    });
+    list.querySelectorAll('[data-act="toggle-contacted"]').forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        var id = btn.getAttribute("data-id");
+        var c = state.careLogs.find(function (x) { return x.id === id; });
+        if (!c) return;
+        try {
+          await Data.careLogs.update(id, { contacted: !c.contacted });
+          c.contacted = !c.contacted;
+          Data.toast("저장됨", "ok");
+          renderCareLogs();
+        } catch (e) { Data.toast("실패: " + (e.message || e), "err"); }
+      });
+    });
+  }
+
+  document.getElementById("btn-save-memo").addEventListener("click", async function () {
+    var v = document.getElementById("care-memo").value.trim();
+    var sid = document.getElementById("care-student").value || null;
+    var contacted = document.getElementById("care-contacted").checked;
+    var msg = document.getElementById("memo-msg");
+    if (!v) {
+      msg.innerHTML = '<span style="color:var(--red)">내용을 입력해 주세요</span>';
+      return;
+    }
+    try {
+      var created = await Data.careLogs.create(churchId, {
+        studentId: sid,
+        teacherId: me.teacherId,
+        notes: v,
+        contacted: contacted
+      });
+      state.careLogs.unshift({
+        id: created.id, studentId: created.student_id, teacherId: created.teacher_id,
+        notes: created.notes, occurredOn: created.occurred_on, contacted: created.contacted
+      });
+      document.getElementById("care-memo").value = "";
+      document.getElementById("care-contacted").checked = false;
+      document.getElementById("care-student").value = "";
+      msg.innerHTML = '<span style="color:var(--green)">저장됨</span>';
+      renderCareLogs();
+    } catch (e) {
+      msg.innerHTML = '<span style="color:var(--red)">' + esc(e.message || String(e)) + '</span>';
+    }
+  });
+
+  // 결석 부서 필터
+  document.getElementById("absent-dept").addEventListener("change", function () {
+    state.absentFilterDept = this.value;
+    loadAbsent();
+  });
+  document.getElementById("btn-refresh-absent").addEventListener("click", loadAbsent);
+
+  // ─── 부트 ───────────────────────────────────────
+  async function boot() {
+    try {
+      state.depts    = await Data.departments.list(true);
+      state.classes  = await Data.classes.list(true);
+      state.students = await Data.students.listAll(false);
+
+      // 결석 부서 필터 옵션
+      var df = document.getElementById("absent-dept");
+      df.innerHTML = '<option value="">— 전체 부서 —</option>' +
+        state.depts.filter(function (d) { return d.is_active; })
+          .sort(function (a, b) { return a.sort_order - b.sort_order; })
+          .map(function (d) {
+            return '<option value="' + esc(d.id) + '">' + esc(d.name) + '</option>';
+          }).join("");
+
+      // 심방 학생 select 옵션
+      var cs = document.getElementById("care-student");
+      cs.innerHTML = '<option value="">대상 학생 선택 (선택 사항)</option>' +
+        state.students.map(function (s) {
+          return '<option value="' + esc(s.id) + '">' + esc(s.name) + '</option>';
+        }).join("");
+
+      state.prayers = await Data.prayers.list();
+      state.careLogs = await Data.careLogs.list({ limit: 50 });
+
+      renderPrayers();
+      renderCareLogs();
+      await loadAbsent();
+    } catch (e) {
+      console.error(e);
+      Data.toast("초기 로드 실패: " + (e.message || e), "err");
+    }
+  }
+
+  await boot();
+})();
+</script>
+</body>
+</html>

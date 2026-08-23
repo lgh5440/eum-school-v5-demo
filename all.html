@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0B1426" />
+<title>이음 교회학교 — 전체</title>
+<link rel="stylesheet" href="./static/eum-shell-v2.css" />
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:9999;background:#F0C24B;color:#1A1400;text-align:center;padding:6px 10px;font-size:12.5px;font-weight:700;font-family:sans-serif;">데모 화면 — 실제 데이터가 아닌 샘플 데이터로 동작합니다</div>
+
+<main class="eum-main">
+
+  <!-- 공지/단체문자 -->
+  <section class="eum-c">
+    <h2>📣 공지 / 단체문자</h2>
+    <p class="hint">아래 문안을 카카오톡·문자에 그대로 복사해 사용하세요.</p>
+    <textarea id="notice" rows="6">[이음 교회학교]
+이번 주일 예배에 함께해 주셔서 감사합니다.
+가족과 평안한 한 주 보내세요.</textarea>
+    <div style="display:flex; gap: 8px; margin-top: 8px; align-items: center;">
+      <button class="eum-btn eum-btn--primary" id="btn-copy">📋 복사</button>
+      <span class="hint" id="copy-msg"></span>
+    </div>
+  </section>
+
+  <!-- 리포트/내보내기 -->
+  <section class="eum-c">
+    <h2>📄 리포트 / 내보내기</h2>
+    <div class="eum-quick">
+      <button class="eum-quick__btn" onclick="alert('6단계 구현 예정')"><span class="ico">📊</span>월간 리포트</button>
+      <button class="eum-quick__btn" onclick="alert('6단계 구현 예정')"><span class="ico">📗</span>Excel</button>
+      <button class="eum-quick__btn" onclick="alert('6단계 구현 예정')"><span class="ico">📄</span>CSV</button>
+      <button class="eum-quick__btn" onclick="alert('6단계 구현 예정')"><span class="ico">💾</span>JSON 백업</button>
+    </div>
+  </section>
+
+  <!-- 설정 -->
+  <section class="eum-c">
+    <h2>⚙ 설정</h2>
+    <ul class="eum-list">
+      <li>
+        <a href="./settings-structure.html" style="flex:1; display:flex; align-items:center; gap:8px;">
+          <span>🏫 부서·반 관리</span>
+        </a>
+        <span class="meta">관리자</span>
+      </li>
+      <li>
+        <a href="./settings-teachers.html" style="flex:1; display:flex; align-items:center; gap:8px;">
+          <span>👥 교사·권한 관리</span>
+        </a>
+        <span class="meta">관리자</span>
+      </li>
+      <li>교회 정보 <span class="meta">관리자</span></li>
+      <li>로그아웃 <span class="meta">전체</span></li>
+    </ul>
+  </section>
+
+</main>
+
+<script src="./static/mock-data.js"></script>
+<script src="./static/eum-shell-v2.js"></script>
+<script>
+(async function () {
+  if (!(await EumShell.guard())) return;
+
+  var m = window.EumMock;
+  var me = null;
+  try { me = await Eum.me(); } catch (_) {}
+  var churchName = (me && me.church && me.church.name) || m.church.name;
+
+  EumShell.mount({
+    pageId: "all",
+    title: "이음 교회학교",
+    church: churchName,
+    dept: ""
+  });
+
+  document.getElementById("btn-copy").addEventListener("click", function () {
+    var txt = document.getElementById("notice").value;
+    var msg = document.getElementById("copy-msg");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function () {
+        msg.innerHTML = '<span style="color:var(--green)">복사 완료</span>';
+      }, function () {
+        msg.innerHTML = '<span style="color:var(--red)">복사 실패 — 직접 선택해 복사하세요</span>';
+      });
+    } else {
+      var ta = document.getElementById("notice");
+      ta.select();
+      document.execCommand("copy");
+      msg.innerHTML = '<span style="color:var(--green)">복사 완료</span>';
+    }
+  });
+})();
+</script>
+</body>
+</html>

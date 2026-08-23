@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0B1426" />
+<title>이음 교회학교</title>
+<link rel="stylesheet" href="./static/eum-shell-v2.css" />
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:9999;background:#F0C24B;color:#1A1400;text-align:center;padding:6px 10px;font-size:12.5px;font-weight:700;font-family:sans-serif;">데모 화면 — 실제 데이터가 아닌 샘플 데이터로 동작합니다</div>
+
+<main class="eum-main">
+
+  <!-- 히어로 -->
+  <section class="eum-hero">
+    <div class="eum-hero__label">이번 주 교회학교 운영</div>
+    <div class="eum-hero__title" id="hero-title">주일을 준비해 봐요</div>
+    <div class="eum-hero__actions">
+      <a class="eum-hero__action" href="./events.html">출석 체크</a>
+      <a class="eum-hero__action" href="./alerts.html">결석 연락</a>
+      <a class="eum-hero__action" href="./all.html">공지 확인</a>
+    </div>
+  </section>
+
+  <!-- 핵심 지표 6개 -->
+  <div class="eum-kpis" id="kpis"></div>
+
+  <!-- 운영 현황 -->
+  <section class="eum-c">
+    <h2>📊 운영 현황</h2>
+    <div id="progress"></div>
+  </section>
+
+  <!-- 빠른 실행 -->
+  <section class="eum-c">
+    <h2>⚡ 빠른 실행</h2>
+    <div class="eum-quick">
+      <a class="eum-quick__btn" href="./events.html"><span class="ico">✓</span>출석 체크</a>
+      <a class="eum-quick__btn" href="./students.html"><span class="ico">➕</span>학생 등록</a>
+      <a class="eum-quick__btn" href="./alerts.html"><span class="ico">🔔</span>결석 연락</a>
+      <a class="eum-quick__btn" href="./alerts.html"><span class="ico">🙏</span>기도제목</a>
+      <a class="eum-quick__btn" href="./all.html"><span class="ico">📢</span>공지/문자</a>
+      <a class="eum-quick__btn" href="./all.html"><span class="ico">📊</span>리포트</a>
+    </div>
+  </section>
+
+  <!-- 오늘 할 일 -->
+  <section class="eum-c">
+    <h2>📋 오늘 할 일</h2>
+    <ul class="eum-list" id="today-tasks"></ul>
+  </section>
+
+</main>
+
+<script src="./static/mock-data.js"></script>
+<script src="./static/eum-shell-v2.js"></script>
+<script>
+(async function () {
+  // 인증 확인
+  if (!(await EumShell.guard())) return;
+
+  var m = window.EumMock;
+  // 실제 사용자 정보가 있으면 해당 교회 이름을 표시하고, Supabase 미연결 시 mock을 사용한다.
+  var me = null;
+  try { me = await Eum.me(); } catch (_) {}
+  var churchName = (me && me.church && me.church.name) || m.church.name;
+
+  EumShell.mount({
+    pageId: "home",
+    title: "이음 교회학교",
+    church: churchName,
+    dept: ""  // 부서는 여러 개일 수 있어 우선 비워 둔다.
+  });
+
+  // 시간대별 인사
+  var hour = new Date().getHours();
+  var greet = hour < 12 ? "좋은 아침입니다" :
+              hour < 18 ? "수고하십니다" : "오늘도 감사합니다";
+  document.getElementById("hero-title").textContent =
+    m.user.name + " 선생님, " + greet;
+
+  // KPI 6개
+  var kpis = [
+    { label: "등록 학생", value: m.kpis.students,      acc: "teal",   unit: "명" },
+    { label: "오늘 출석", value: m.kpis.todayAttended, acc: "green",  unit: "명" },
+    { label: "결석",      value: m.kpis.absent,        acc: "red",    unit: "명" },
+    { label: "새친구",    value: m.kpis.newcomers,     acc: "orange", unit: "명" },
+    { label: "기도제목",  value: m.kpis.prayers,       acc: "purple", unit: "개" },
+    { label: "돌봄 필요", value: m.kpis.careNeeded,    acc: "blue",   unit: "명" }
+  ];
+  document.getElementById("kpis").innerHTML = kpis.map(function (k) {
+    return '<div class="eum-kpi acc-' + k.acc + '">'
+         +   '<div class="eum-kpi__label">' + k.label + '</div>'
+         +   '<div class="eum-kpi__value">' + k.value
+         +     '<span class="eum-kpi__unit">' + k.unit + '</span>'
+         +   '</div>'
+         + '</div>';
+  }).join("");
+
+  // 진행률
+  document.getElementById("progress").innerHTML = m.progress.map(function (p) {
+    return '<div class="eum-prog__row">'
+         +   '<div class="eum-prog__label">' + p.label + '</div>'
+         +   '<div class="eum-prog__bar">'
+         +     '<div class="eum-prog__fill" style="width:' + p.value + '%"></div>'
+         +   '</div>'
+         +   '<div class="eum-prog__value">' + p.value + '%</div>'
+         + '</div>';
+  }).join("");
+
+  // 오늘 할 일
+  document.getElementById("today-tasks").innerHTML = m.todayTasks.map(function (t) {
+    var badge = t.done
+      ? '<span class="eum-badge green">완료</span>'
+      : '<span class="eum-badge orange">대기</span>';
+    return '<li>' + badge + '<span>' + t.text + '</span></li>';
+  }).join("");
+})();
+</script>
+</body>
+</html>
