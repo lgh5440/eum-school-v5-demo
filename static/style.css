@@ -1,0 +1,309 @@
+/* 이음 스쿨 admin — 최소 스타일 (Walking Skeleton).
+ * 디자인 토큰은 추후 packages/shared에 분리. 지금은 자기 충족.
+ * 색상 톤: 따뜻하지만 차분 (교회·교사 환경).
+ */
+
+:root {
+  /* eum_웹토큰_v1 정본 hex 그대로(D:\HONG\09_이음\01_부서\경영조정실\_디자인시스템\eum_웹토큰_v1.css) */
+  --color-bg: linear-gradient(180deg,#DDEEFF 0%,#EAF3FF 45%,#FFFFFF 100%);
+  --color-surface: #ffffff;
+  --color-border: #a7b7cc;
+  --color-text: #3A4568;
+  --color-muted: #5C6A93;
+  --color-title: #101A3D;
+  --color-primary: #2F73F2;       /* 정본 Primary Blue(메인 블루) — 임의값 #2c5f7c 대체 */
+  --color-primary-strong: #1F5FD9; /* 정본 딥 블루 — 임의값 #214c64 대체 */
+  --color-accent: #2F73F2;        /* 정본 Primary Blue — 강조 */
+  --color-error: #b3261e;
+  --color-ok: #1a7f37;
+
+  --radius: 10px;
+  --shadow-sm: 0 1px 2px rgba(31,95,217,0.10);
+  --shadow-md: 0 6px 18px rgba(31,95,217,0.14);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo",
+               "Segoe UI", Roboto, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { color: var(--color-title); }
+
+code { font-family: var(--font-mono); font-size: 0.92em; }
+
+/* ─── 로그인 페이지 ─────────────────────────────────────── */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  box-shadow: var(--shadow-md);
+}
+.auth-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--color-title);
+}
+.auth-header .subtitle {
+  margin: 4px 0 24px;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+.auth-form { display: flex; flex-direction: column; gap: 14px; }
+.auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: -14px 0 10px;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+.auth-back-link:hover { text-decoration: underline; }
+.auth-secondary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.auth-footnote {
+  margin-top: 20px;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field .label { font-size: 0.85rem; color: var(--color-muted); font-weight: 500; }
+.field input {
+  padding: 10px 12px;
+  border: 1px solid #6b7f9e;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  color: inherit;
+}
+.field input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -1px;
+  border-color: transparent;
+}
+
+/* ─── 버튼 ─────────────────────────────────────────────── */
+.btn {
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font: inherit;
+  font-weight: 600;
+  transition: background-color 0.12s ease;
+}
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--color-primary-strong); }
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text);
+  border-color: #6b7f9e;
+}
+.btn-ghost:hover { background: rgba(0,0,0,0.04); }
+
+/* ─── 메인 앱 페이지 ───────────────────────────────────── */
+.app-page { min-height: 100vh; }
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+.brand { font-weight: 700; color: var(--color-primary); }
+.app-nav { display: flex; align-items: center; gap: 12px; }
+.user-email { color: var(--color-muted); font-size: 0.9rem; }
+
+.app-main {
+  max-width: 720px;
+  margin: 24px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
+}
+.card h2 { margin: 0 0 6px; font-size: 1.1rem; color: var(--color-title); }
+.hint { margin: 0 0 16px; font-size: 0.88rem; color: var(--color-muted); }
+.muted { color: var(--color-muted); }
+.todo { margin: 8px 0 0; padding-left: 20px; }
+.todo li { margin: 4px 0; }
+
+.me-card { font-size: 0.95rem; }
+.me-card .ok { color: var(--color-ok); margin-top: 12px; font-weight: 600; }
+
+.kv {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 6px 14px;
+  margin: 0;
+}
+.kv dt { color: var(--color-muted); font-size: 0.85rem; padding-top: 2px; }
+.kv dd { margin: 0; }
+
+.error {
+  margin: 8px 0 0;
+  color: var(--color-error);
+  font-size: 0.9rem;
+}
+.ok-message {
+  margin: 8px 0 0;
+  color: var(--color-ok);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* ─── 라운드 2 신규 ────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-right: 4px;
+}
+.sub-h {
+  margin: 14px 0 6px;
+  font-size: 0.95rem;
+  color: var(--color-primary-strong);
+  font-weight: 600;
+}
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+}
+.info-list li {
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  background: rgba(0,0,0,0.015);
+}
+.info-list .small { font-size: 0.85rem; }
+.ok-inline { color: var(--color-ok); font-size: 0.85rem; }
+.warn-inline { color: var(--color-accent); font-size: 0.85rem; }
+
+.links { list-style: none; padding: 0; margin: 0; }
+.links li { padding: 8px 0; border-bottom: 1px dashed var(--color-border); }
+.links li:last-child { border-bottom: none; }
+.links a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+.links a:hover { text-decoration: underline; }
+
+/* ─── 폼·리스트 공통 (families, alerts) ───────────────── */
+.form-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+}
+.form-grid .field-full { grid-column: 1 / -1; }
+@media (max-width: 540px) {
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+.alert-card {
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-accent);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  background: var(--color-surface);
+}
+.alert-card.gentle { border-left-color: var(--color-primary); }
+.alert-card.concern { border-left-color: var(--color-error); }
+.alert-card.resolved { opacity: 0.6; }
+.alert-meta {
+  display: flex;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-top: 4px;
+}
+
+.empty-state {
+  padding: 24px;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.92rem;
+}
+.empty-state a { color: var(--color-primary); }
+
+/* ─── 51라운드: 모바일 반응형 ───────────────────────── */
+@media (max-width: 540px) {
+  .app-header { padding: 10px 14px; }
+  .app-main { padding: 0 14px; margin: 16px auto; }
+  .side-nav { padding: 6px 14px; }
+
+  /* stat-grid 4열 → 2열 */
+  .stat-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* ─── 사이드 내비 (layout.js 주입용) ─────────────────────── */
+.side-nav {
+  display: flex;
+  gap: 4px;
+  padding: 8px 28px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.side-nav .nav-item {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 6px;
+  color: var(--color-muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: background 0.12s;
+}
+.side-nav .nav-item:hover { background: rgba(0,0,0,0.04); color: var(--color-text); }
+.side-nav .nav-item.active {
+  background: var(--color-primary);
+  color: #fff;
+}

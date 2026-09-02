@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>E:UM Church School - 개인용으로 시작하기</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<link rel="stylesheet" href="./static/style.css?v=20260902a" />
+<style>
+  /* 화면1A(로컬 시작 정보 입력) 전용 — docs/로컬우선_온보딩_설계_2026-09-02.md §7·§8-2 */
+  .disclaimer-box {
+    max-height: 220px; overflow-y: auto; border: 1px solid #DDEEFF; border-radius: 10px;
+    padding: 12px 14px; background: #F5F7FA; font-size: 0.82rem; color: #3A4568;
+    line-height: 1.6; margin: 6px 0 12px;
+  }
+  .disclaimer-box p { margin: 0 0 10px; }
+  .disclaimer-box p:last-child { margin-bottom: 0; }
+  .consent-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 14px; }
+  .consent-row input[type="checkbox"] { margin-top: 3px; width: 18px; height: 18px; flex-shrink: 0; }
+  .consent-row label { font-size: 0.88rem; color: #101A3D; }
+</style>
+</head>
+<body class="auth-page">
+
+<main class="auth-card">
+  <a class="auth-back-link" href="./mode_start.html">← 다른 방법으로 시작하기</a>
+  <header class="auth-header">
+    <h1>개인용으로 시작하기</h1>
+    <p class="subtitle">이 정보는 이 기기에만 저장됩니다.</p>
+  </header>
+
+  <form id="local-setup-form" class="auth-form" novalidate>
+    <label class="field">
+      <span class="label">교회 이름 (선택)</span>
+      <input type="text" name="church_name" maxlength="120" placeholder="예: 은혜교회 (안 적어도 됩니다)" autocomplete="off" />
+    </label>
+
+    <label class="field">
+      <span class="label">본인 이름</span>
+      <input type="text" name="user_name" required maxlength="40" placeholder="예: 김전도사" autocomplete="name" />
+    </label>
+
+    <label class="field">
+      <span class="label">로컬 잠금 PIN (선택, 4자리 숫자)</span>
+      <input type="password" name="pin" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="다른 사람이 이 기기를 함께 써도 괜찮다면 비워두세요" autocomplete="off" />
+    </label>
+
+    <div class="disclaimer-box" id="disclaimer-box">
+      <p><strong>개인용(로컬) 안내</strong></p>
+      <p>학생·보호자·출결·메모 데이터는 이 기기의 이 브라우저에만 저장됩니다.
+        이음 스쿨 운영팀이나 다른 기기에서는 볼 수 없습니다.</p>
+      <p>기기를 잃어버리거나 고장 나거나 브라우저 데이터를 삭제·초기화하면
+        데이터를 복구할 수 없습니다.</p>
+      <p>로컬 잠금 PIN을 설정해도 이는 화면을 가리는 용도일 뿐, 데이터를 암호화하지
+        않습니다. PIN을 잊어도 데이터 자체는 남아있고, 운영팀이 대신 복구해 드릴 수는
+        없습니다.</p>
+      <p>중요한 데이터는 정기적으로 백업해 주세요(홈 화면의 "백업"에서 엑셀용 CSV
+        다운로드와 전체 백업 파일 저장을 할 수 있습니다).</p>
+      <p>개인용 모드는 여러 교사·여러 기기 실시간 공유를 지원하지 않습니다.</p>
+    </div>
+
+    <div class="consent-row">
+      <input type="checkbox" id="consent-check" name="consent" />
+      <label for="consent-check">위 내용을 확인했습니다</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">이 기기에 저장하고 시작</button>
+    <p id="setup-message" class="error" hidden></p>
+  </form>
+</main>
+
+<script src="./static/local-storage-port.js"></script>
+<script>
+  (function () {
+    const form = document.getElementById("local-setup-form");
+    const msgEl = document.getElementById("setup-message");
+
+    function showMessage(text) {
+      msgEl.hidden = false;
+      msgEl.textContent = text;
+      msgEl.className = "error";
+    }
+
+    if (!window.EumLocalStorage || !window.EumLocalStorage.isSupported()) {
+      showMessage("이 브라우저는 로컬 저장(IndexedDB)을 지원하지 않아 개인용 모드를 쓸 수 없습니다. 초대코드로 시작해 주세요.");
+      form.querySelector('button[type="submit"]').disabled = true;
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msgEl.hidden = true;
+
+      const fd = new FormData(form);
+      const churchName = String(fd.get("church_name") || "").trim();
+      const userName = String(fd.get("user_name") || "").trim();
+      const pin = String(fd.get("pin") || "").trim();
+      const consent = fd.get("consent") === "on";
+
+      if (!userName) {
+        showMessage("본인 이름을 입력해 주세요.");
+        return;
+      }
+      if (pin && !/^[0-9]{4}$/.test(pin)) {
+        showMessage("로컬 잠금 PIN은 숫자 4자리로 입력하거나 비워두세요.");
+        return;
+      }
+      if (!consent) {
+        showMessage("위 내용을 확인해야 시작할 수 있습니다.");
+        return;
+      }
+
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      try {
+        await window.EumLocalStorage.saveSetup({ churchName, userName, pin: pin || null });
+        window.location.replace("./local_ready.html");
+      } catch (err) {
+        showMessage(err.message || "저장하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+        btn.disabled = false;
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>

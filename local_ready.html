@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>E:UM Church School - 준비 완료</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<link rel="stylesheet" href="./static/style.css?v=20260902a" />
+</head>
+<body class="auth-page">
+
+<main class="auth-card" style="text-align:center">
+  <header class="auth-header">
+    <h1>✅ 준비됐습니다!</h1>
+    <p class="subtitle" id="ready-subtitle">이제부터 학생 명부·출석·돌봄 메모가 이 기기에 저장됩니다.</p>
+  </header>
+
+  <p class="ok-message" style="margin-bottom:18px">
+    💡 잊지 마세요: 홈 화면 아래 "백업"에서 정기적으로 "엑셀용 CSV 다운로드"로 백업해 주세요.
+    (기기 고장·브라우저 데이터 삭제 시 복구할 수 없습니다)
+  </p>
+
+  <a class="btn btn-primary" href="./local_home.html" id="start-btn">시작하기 → 홈으로 이동</a>
+</main>
+
+<script src="./static/local-storage-port.js"></script>
+<script>
+  (async function () {
+    if (!window.EumLocalStorage) return;
+    try {
+      const setup = await window.EumLocalStorage.getSetup();
+      if (!setup) {
+        // 설정 없이 이 화면에 바로 들어온 경우 — 화면1A로 되돌림
+        window.location.replace("./local_setup.html");
+        return;
+      }
+      const who = setup.userName ? `${setup.userName}님, ` : "";
+      const church = setup.churchName ? `${setup.churchName} · ` : "";
+      document.getElementById("ready-subtitle").textContent =
+        `${who}${church}이제부터 학생 명부·출석·돌봄 메모가 이 기기에 저장됩니다.`;
+    } catch (_) {}
+  })();
+</script>
+
+</body>
+</html>
