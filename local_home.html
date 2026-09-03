@@ -21,10 +21,18 @@
     font-size: 0.7rem; padding: 2px 8px; border-radius: 999px;
     background: rgba(255,255,255,0.22);
   }
-  .attend-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .attend-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
   .attend-row .stu-meta { font-size: 0.78rem; color: #6b7280; }
   .attend-row .attend-btn { min-width: 88px; }
   .attend-row .attend-btn.done { background: #1a7f37; border-color: #1a7f37; color: #fff; }
+  /* 연락처·주소·최근 돌봄메모 (2026-09-03 5차) */
+  .stu-contact { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; font-size: 0.82rem; }
+  .stu-contact a { color: #1F5FD9; text-decoration: none; font-weight: 700; }
+  .stu-contact a:hover { text-decoration: underline; }
+  .stu-address { color: #5C6A93; }
+  .contact-box { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .contact-box input { font-size: 0.82rem; padding: 4px 6px; }
+  .stu-recent-note { margin-top: 4px; font-size: 0.8rem; color: #3A4568; background: #fcfaf4; border: 1px solid #ede8da; border-radius: 4px; padding: 3px 8px; display: inline-block; }
   /* 돌봄·기도 메모 */
   .note-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
   .note-row .note-body { flex: 1; min-width: 0; }
@@ -38,6 +46,42 @@
   /* 백업 */
   .backup-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
   .backup-grid .btn-s { min-width: 150px; }
+  /* 부서·반 설정 (2026-09-03 3차) */
+  .dept-card { border: 1px solid #eadfcf; border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; background: #fffdfa; }
+  .dept-card .dept-name { font-weight: 700; }
+  .dept-card .dept-age { color: #6b7280; font-size: 0.78rem; margin-left: 6px; }
+  .dept-card ul { margin: 6px 0 0; padding-left: 18px; font-size: 0.86rem; color: #3A4568; }
+  .stu-placement { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .stu-placement select { font-size: 0.8rem; padding: 3px 4px; }
+  /* 결석 알림 (F4, 2026-09-03 3차) */
+  .alert-row { border: 1px solid #eadfcf; border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; background: #fffdfa; }
+  .alert-row.stage-week1 { border-left: 4px solid #6FA7FF; }
+  .alert-row.stage-week2 { border-left: 4px solid #1F5FD9; }
+  .alert-row.stage-week3 { border-left: 4px solid #bd7912; }
+  .alert-row.stage-week4 { border-left: 4px solid #b3261e; }
+  .alert-row .alert-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .alert-row .alert-meta { font-size: 0.78rem; color: #6b7280; }
+  .alert-row .alert-resolved { margin-top: 6px; font-size: 0.86rem; color: #1a7f37; }
+  .alert-row .alert-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .alert-row textarea { width: 100%; margin-top: 6px; font-size: 0.86rem; }
+  /* 새친구관리 (2026-09-03 4차) */
+  .guardian-block { margin-top: 8px; padding-top: 10px; border-top: 1px dashed #e6e2d8; }
+  .guardian-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 8px; padding: 8px; border: 1px solid #eadfcf; border-radius: 6px; margin-bottom: 6px; background: #fffdfa; }
+  .bulk-box { margin-top: 8px; padding: 10px; border: 1px solid #e6e1d5; border-radius: 8px; background: #fcfaf4; }
+  .bulk-box textarea { width: 100%; font-family: Consolas, Menlo, monospace; font-size: 0.84rem; }
+  .bulk-box table { border-collapse: collapse; font-size: 0.84rem; margin-top: 6px; }
+  .bulk-box th, .bulk-box td { border: 1px solid #e6e1d5; padding: 3px 6px; }
+  /* 교사관리 (2026-09-03 4차) */
+  .teacher-row { border: 1px solid #eadfcf; border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; background: #fffdfa; }
+  .teacher-row .teacher-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .teacher-row .teacher-meta { font-size: 0.78rem; color: #6b7280; }
+  .teacher-row .teacher-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .teacher-row .attend-btn.done { background: #1a7f37; border-color: #1a7f37; color: #fff; }
+  .teacher-row .care-box { margin-top: 6px; }
+  .teacher-row .care-box select, .teacher-row .care-box textarea { width: 100%; margin-top: 4px; font-size: 0.86rem; }
+  .teacher-row .teacher-history { margin-top: 6px; font-size: 0.82rem; color: #3A4568; }
+  .teacher-row .teacher-history .item { padding: 3px 0; border-top: 1px solid #f0eadf; }
+  .teacher-row .teacher-history .item:first-child { border-top: 0; }
 </style>
 </head>
 <body>
@@ -53,8 +97,50 @@
   </section>
 
   <section class="eum-c acc">
+    <h2>부서·반 설정</h2>
+    <p class="hint">학생을 등록하기 전에 부서와 반을 먼저 만들어 두면, 아래 학생 명부에서 바로 배정할 수 있습니다. 부서 없이도 학생 등록은 가능합니다.</p>
+    <form id="add-department-form" class="form-grid">
+      <div class="row">
+        <div class="field">
+          <label>부서 이름</label>
+          <input type="text" name="name" required maxlength="50" placeholder="예: 유초등부" />
+        </div>
+        <div class="field">
+          <label>최소 나이 (선택)</label>
+          <input type="number" name="ageMin" min="0" max="120" placeholder="예: 8" />
+        </div>
+        <div class="field">
+          <label>최대 나이 (선택)</label>
+          <input type="number" name="ageMax" min="0" max="120" placeholder="예: 13" />
+        </div>
+      </div>
+      <button type="submit" class="btn-s">부서 추가</button>
+      <p id="department-message" class="msg" hidden></p>
+    </form>
+    <form id="add-class-form" class="form-grid" style="margin-top:10px">
+      <div class="row">
+        <div class="field">
+          <label>부서 선택</label>
+          <select name="departmentId" id="class-department-select">
+            <option value="">부서를 먼저 추가해 주세요</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>반 이름</label>
+          <input type="text" name="name" required maxlength="50" placeholder="예: 믿음반" />
+        </div>
+      </div>
+      <button type="submit" class="btn-s">반 추가</button>
+      <p id="class-message" class="msg" hidden></p>
+    </form>
+    <div id="department-list" class="eum-list" style="margin-top:10px">
+      <p class="muted">등록된 부서가 없습니다.</p>
+    </div>
+  </section>
+
+  <section class="eum-c acc">
     <h2>학생 명부</h2>
-    <p class="hint">이름만 있으면 바로 추가할 수 있습니다. 부서는 선택입니다.</p>
+    <p class="hint">이름만 있으면 바로 추가할 수 있습니다. 부서·반은 선택입니다.</p>
     <form id="add-student-form" class="form-grid">
       <div class="row">
         <div class="field">
@@ -63,12 +149,101 @@
         </div>
         <div class="field">
           <label>부서 (선택)</label>
-          <input type="text" name="department" maxlength="40" placeholder="예: 유치부" />
+          <select name="departmentId" id="student-department-select">
+            <option value="">부서 미지정</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>반 (선택)</label>
+          <select name="classId" id="student-class-select">
+            <option value="">반 미지정</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>연락처 (선택)</label>
+          <input type="tel" name="phone" maxlength="30" placeholder="010-0000-0000" />
+        </div>
+        <div class="field">
+          <label>주소 (선택)</label>
+          <input type="text" name="address" maxlength="200" placeholder="예: 서울시 OO구 OO로 12" />
         </div>
       </div>
       <button type="submit" class="btn-primary">학생 추가</button>
       <p id="student-message" class="msg" hidden></p>
     </form>
+  </section>
+
+  <section class="eum-c acc">
+    <h2>새친구관리</h2>
+    <p class="hint">보호자 정보와 함께 새 학생을 등록합니다. 여러 명을 한 번에 등록하려면 아래 CSV 일괄등록을 펼쳐서 쓰세요.</p>
+    <form id="add-friend-form" class="form-grid">
+      <div class="row">
+        <div class="field">
+          <label>학생 이름</label>
+          <input type="text" name="name" required maxlength="40" placeholder="예: 이서연" />
+        </div>
+        <div class="field">
+          <label>생년 (선택)</label>
+          <input type="number" name="birthYear" min="2000" max="2100" placeholder="예: 2016" />
+        </div>
+        <div class="field">
+          <label>성별 (선택)</label>
+          <select name="gender">
+            <option value="">미지정</option>
+            <option value="M">남</option>
+            <option value="F">여</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>부서 (선택)</label>
+          <select name="departmentId" id="friend-department-select"><option value="">부서 미지정</option></select>
+        </div>
+        <div class="field">
+          <label>반 (선택)</label>
+          <select name="classId" id="friend-class-select"><option value="">반 미지정</option></select>
+        </div>
+      </div>
+      <div class="field-full guardian-block">
+        <h3>보호자 정보</h3>
+        <p class="hint">아버지·어머니 둘 다 등록하거나, 조부모·후견인을 더할 수 있습니다. 최소 한 분은 입력해 주세요.</p>
+      </div>
+      <div class="field-full" id="friend-guardians-list"></div>
+      <div class="field-full">
+        <button type="button" class="btn-ghost" id="add-friend-guardian-btn">＋ 보호자 한 분 더 추가</button>
+      </div>
+      <div class="field-full">
+        <button type="submit" class="btn-primary">새친구 등록</button>
+        <span id="friend-message" class="msg" hidden></span>
+      </div>
+    </form>
+
+    <details style="margin-top:12px">
+      <summary>CSV 일괄 등록 (여러 명을 한 번에)</summary>
+      <div class="bulk-box">
+        <p class="hint">
+          <strong>형식 (첫 줄은 헤더, 한 줄 = 학생 1명):</strong><br>
+          <code>학생이름,생년,성별,부서명,반명,보호자이름,보호자전화,관계,메모</code><br>
+          <span class="muted small">성별: M/F/미지정 · 관계: father/mother/guardian/other · 부서명·반명은 위 "부서·반 설정"에 이미 등록된 이름과 정확히 일치해야 합니다(없으면 미지정으로 처리)</span>
+        </p>
+        <input type="file" id="friend-bulk-file" accept=".csv,.txt,text/csv,text/plain" style="margin-bottom:6px" />
+        <textarea id="friend-bulk-text" rows="5" placeholder="학생이름,생년,성별,부서명,반명,보호자이름,보호자전화,관계,메모
+김민지,2016,F,유초등부,믿음반,김지영,010-1234-5678,mother,"></textarea>
+        <div style="margin-top:6px">
+          <button type="button" class="btn-ghost" id="friend-bulk-preview-btn">미리보기</button>
+          <button type="button" class="btn-primary" id="friend-bulk-submit-btn" disabled>업로드</button>
+        </div>
+        <div id="friend-bulk-preview"></div>
+        <p id="friend-bulk-message" class="msg" hidden></p>
+      </div>
+    </details>
+
+    <div id="friend-list" class="eum-list" style="margin-top:12px">
+      <p class="muted">등록된 새친구가 없습니다.</p>
+    </div>
   </section>
 
   <section class="eum-c">
@@ -123,6 +298,49 @@
   </section>
 
   <section class="eum-c">
+    <h2>결석 알림 <span class="muted small">(F4)</span></h2>
+    <p class="hint">마지막 출석일로부터 1주 이상 지난 학생을 자동으로 모읍니다(요일 상관없이 경과일÷7). 「문자 보내기」는 이 기기의 문자 앱을 여는 것뿐이라 받는 사람을 직접 골라야 합니다 — 보호자 연락처는 이 앱에 저장하지 않습니다.</p>
+    <div id="alert-list" class="eum-list">
+      <p class="muted">불러오는 중...</p>
+    </div>
+  </section>
+
+  <section class="eum-c acc">
+    <h2>교사관리</h2>
+    <p class="hint">교사 명단을 관리하고, 이번 주 출석 확인과 돌봄 기록(안부·격려·기도·쉼상담)을 남깁니다.</p>
+    <form id="add-teacher-form" class="form-grid">
+      <div class="row">
+        <div class="field">
+          <label>교사 이름</label>
+          <input type="text" name="name" required maxlength="40" placeholder="예: 최민준" />
+        </div>
+        <div class="field">
+          <label>역할</label>
+          <select name="role">
+            <option value="teacher">교사</option>
+            <option value="assistant_department_head">부감</option>
+            <option value="department_head">부장</option>
+            <option value="pastor">교역자</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>담당 부서 (선택)</label>
+          <select name="departmentId" id="teacher-department-select"><option value="">부서 배정 없음</option></select>
+        </div>
+        <div class="field">
+          <label>전화 (선택)</label>
+          <input type="tel" name="phone" maxlength="30" placeholder="010-0000-0000" />
+        </div>
+      </div>
+      <button type="submit" class="btn-primary">교사 추가</button>
+      <p id="teacher-message" class="msg" hidden></p>
+    </form>
+    <div id="teacher-list" class="eum-list" style="margin-top:10px">
+      <p class="muted">등록된 교사가 없습니다.</p>
+    </div>
+  </section>
+
+  <section class="eum-c">
     <h2>백업</h2>
     <p class="hint">이 기기가 고장 나거나 브라우저 데이터가 지워지면 복구할 수 없습니다. 정기적으로 내려받아 두세요.</p>
     <p class="hint small muted">엑셀용 CSV는 엑셀·구글시트에서 바로 열어 보는 용도(한글 깨짐 없음)이고, 백업 파일(JSON)은 나중에 협업 모드로 옮기거나 같은 기기를 다시 설정할 때 되살리는 용도입니다.</p>
@@ -145,6 +363,31 @@
     let students = [];
     let attendanceToday = new Map(); // studentId -> attendance record
     let notes = []; // 돌봄·기도 메모 (최신순)
+    let latestNoteByStudent = {}; // studentId -> 가장 최근 careNotes 1건 (2026-09-03 5차, 명부 미리보기용)
+    let departments = []; // 부서 (2026-09-03 3차)
+    let classes = []; // 반 (2026-09-03 3차)
+    let deptMap = {}; // id -> department
+    let classMap = {}; // id -> class
+    let alerts = []; // 결석 알림 계산 결과 (2026-09-03 3차)
+    let alertResolutionMap = {}; // "studentId|stage" -> resolution record
+    let teachers = []; // 교사 명부 (2026-09-03 4차)
+    let weeklyAttendanceIds = new Set(); // 이번 주 출석확인된 teacherId
+    let openTeacherHistory = new Set(); // 돌봄기록 펼쳐진 teacherId
+
+    const F4_STAGE_LABEL = {
+      week1: "1주차 — 가벼운 안부",
+      week2: "2주차 — 따뜻한 인사",
+      week3: "3주차 — 만남 권유",
+      week4: "4주차+ — 직접 찾아뵙기",
+    };
+    // 로컬 모드 자체 문구 — 클라우드(협업모드) F4 발송 문구와 동일하지 않음(9번 원칙:
+    // 평가·감독성 표현 대신 안부·환대 톤 유지).
+    const F4_MESSAGE = {
+      week1: (name) => `${name} 학생, 요즘 잘 지내나요? 지난주에 얼굴을 못 봐서 궁금했어요. 다음에 또 만나요 :)`,
+      week2: (name) => `${name} 학생 가정에 안부 인사드립니다. 요즘 어떻게 지내시는지 궁금해서 연락드려요. 편하실 때 답장 주세요.`,
+      week3: (name) => `${name} 학생 가정에 안부 인사드립니다. 그동안 잘 지내셨는지요. 시간 되실 때 잠깐 뵙고 안부 나누고 싶습니다.`,
+      week4: (name) => `${name} 학생 가정에 안부 인사드립니다. 오래 못 뵈어 마음이 쓰여 연락드려요. 편하신 시간에 잠깐이라도 찾아뵙고 싶습니다.`,
+    };
 
     // 출석 처리 큐 — reviewer-codex 독립검증(2026-09-02)이 재현한 race condition 수정.
     // 대기 없이 여러 학생 버튼을 연달아 누르면 각 클릭이 자기 recordAttendance()+reload()를
@@ -176,11 +419,18 @@
         document.getElementById("home-title").textContent = `E:UM Church School — ${who}${church}`;
       }
       document.getElementById("today-label").textContent = LS.todayKst();
+      await reloadDepartments();
       await reload();
       await reloadNotes();
+      await reloadAlerts();
+      await reloadTeachers();
       bindAddStudentForm();
       bindNoteForm();
       bindBackup();
+      bindDepartmentForms();
+      bindFriendForm();
+      bindTeacherForm();
+      resetGuardianRows();
     }
 
     async function reload() {
@@ -189,6 +439,128 @@
       attendanceToday = new Map(todayRows.map((r) => [r.studentId, r]));
       renderStudentList();
       renderStudentOptions();
+      renderFriendList();
+    }
+
+    // ─── 부서·반 (2026-09-03 3차) ─────────────────────────────
+    async function reloadDepartments() {
+      departments = await LS.listDepartments();
+      classes = await LS.listClasses();
+      deptMap = {}; departments.forEach((d) => { deptMap[d.id] = d; });
+      classMap = {}; classes.forEach((c) => { classMap[c.id] = c; });
+      renderDepartmentList();
+      fillDepartmentSelects();
+    }
+
+    function fillDepartmentSelects() {
+      const options = departments.map((d) => `<option value="${esc(d.id)}">${esc(d.name)}</option>`).join("");
+      // 학생 등록 폼
+      const studentSel = document.getElementById("student-department-select");
+      const prevStudentDept = studentSel.value;
+      studentSel.innerHTML = '<option value="">부서 미지정</option>' + options;
+      if (departments.some((d) => d.id === prevStudentDept)) studentSel.value = prevStudentDept;
+      fillClassSelectFor(studentSel.value, "student-class-select");
+      studentSel.onchange = () => fillClassSelectFor(studentSel.value, "student-class-select");
+      // 반 등록 폼
+      const classDeptSel = document.getElementById("class-department-select");
+      const prevClassDept = classDeptSel.value;
+      classDeptSel.innerHTML = departments.length
+        ? '<option value="">부서 선택</option>' + options
+        : '<option value="">부서를 먼저 추가해 주세요</option>';
+      if (departments.some((d) => d.id === prevClassDept)) classDeptSel.value = prevClassDept;
+      // 새친구관리 폼 (2026-09-03 4차)
+      const friendSel = document.getElementById("friend-department-select");
+      if (friendSel) {
+        const prevFriendDept = friendSel.value;
+        friendSel.innerHTML = '<option value="">부서 미지정</option>' + options;
+        if (departments.some((d) => d.id === prevFriendDept)) friendSel.value = prevFriendDept;
+        fillClassSelectFor(friendSel.value, "friend-class-select");
+        friendSel.onchange = () => fillClassSelectFor(friendSel.value, "friend-class-select");
+      }
+      // 교사관리 폼 (2026-09-03 4차)
+      const teacherSel = document.getElementById("teacher-department-select");
+      if (teacherSel) {
+        const prevTeacherDept = teacherSel.value;
+        teacherSel.innerHTML = '<option value="">부서 배정 없음</option>' + options;
+        if (departments.some((d) => d.id === prevTeacherDept)) teacherSel.value = prevTeacherDept;
+      }
+    }
+
+    function fillClassSelectFor(departmentId, selectId) {
+      const sel = document.getElementById(selectId);
+      const prev = sel.value;
+      const list = departmentId ? classes.filter((c) => c.departmentId === departmentId) : [];
+      sel.innerHTML = '<option value="">반 미지정</option>' + list.map((c) => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
+      if (list.some((c) => c.id === prev)) sel.value = prev;
+    }
+
+    function renderDepartmentList() {
+      const tgt = document.getElementById("department-list");
+      if (!departments.length) {
+        tgt.innerHTML = '<p class="muted">등록된 부서가 없습니다. 예: 유아부, 유초등부, 중고등부</p>';
+        return;
+      }
+      tgt.innerHTML = departments.map((d) => {
+        const ageLabel = (d.ageMin != null || d.ageMax != null) ? ` <span class="dept-age">${d.ageMin ?? ""}-${d.ageMax ?? ""}세</span>` : "";
+        const deptClasses = classes.filter((c) => c.departmentId === d.id);
+        const classHtml = deptClasses.length
+          ? "<ul>" + deptClasses.map((c) => `<li>${esc(c.name)}</li>`).join("") + "</ul>"
+          : '<p class="muted small" style="margin:4px 0 0">등록된 반 없음</p>';
+        return `<div class="dept-card"><span class="dept-name">${esc(d.name)}</span>${ageLabel}${classHtml}</div>`;
+      }).join("");
+    }
+
+    function bindDepartmentForms() {
+      const deptForm = document.getElementById("add-department-form");
+      const deptMsg = document.getElementById("department-message");
+      deptForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        deptMsg.hidden = true;
+        const fd = new FormData(deptForm);
+        const btn = deptForm.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        try {
+          await LS.addDepartment({ name: fd.get("name"), ageMin: fd.get("ageMin"), ageMax: fd.get("ageMax") });
+          deptForm.reset();
+          await reloadDepartments();
+          deptMsg.hidden = false; deptMsg.className = "msg ok"; deptMsg.textContent = "부서를 추가했습니다.";
+        } catch (err) {
+          deptMsg.hidden = false; deptMsg.className = "msg err"; deptMsg.textContent = err.message || "추가하지 못했습니다.";
+        } finally {
+          btn.disabled = false;
+        }
+      });
+
+      const classForm = document.getElementById("add-class-form");
+      const classMsg = document.getElementById("class-message");
+      classForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        classMsg.hidden = true;
+        const fd = new FormData(classForm);
+        const btn = classForm.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        try {
+          await LS.addClass({ departmentId: fd.get("departmentId"), name: fd.get("name") });
+          const keepDept = fd.get("departmentId");
+          classForm.reset();
+          await reloadDepartments();
+          document.getElementById("class-department-select").value = keepDept;
+          classMsg.hidden = false; classMsg.className = "msg ok"; classMsg.textContent = "반을 추가했습니다.";
+        } catch (err) {
+          classMsg.hidden = false; classMsg.className = "msg err"; classMsg.textContent = err.message || "추가하지 못했습니다.";
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    }
+
+    async function changeStudentPlacement(studentId, departmentId, classId) {
+      try {
+        await LS.updateStudentPlacement(studentId, { departmentId, classId });
+        await reload();
+      } catch (err) {
+        alert(err.message || "부서·반 변경에 실패했습니다.");
+      }
     }
 
     function renderStudentList() {
@@ -199,17 +571,82 @@
       }
       tgt.innerHTML = students.map((s) => {
         const checked = attendanceToday.has(s.id);
-        const meta = s.department ? esc(s.department) : "부서 미지정";
+        const placement = LS.resolveStudentPlacement(s, deptMap, classMap);
+        const meta = [placement.department, placement.className].filter(Boolean).join(" · ") || "부서 미지정";
+        const deptOptions = departments.map((d) => `<option value="${esc(d.id)}"${s.departmentId === d.id ? " selected" : ""}>${esc(d.name)}</option>`).join("");
+        const classOptionsList = classes.filter((c) => c.departmentId === s.departmentId);
+        const classOptions = classOptionsList.map((c) => `<option value="${esc(c.id)}"${s.classId === c.id ? " selected" : ""}>${esc(c.name)}</option>`).join("");
+        const placementControls = departments.length
+          ? `<div class="stu-placement">
+              <select class="stu-dept-select" data-student-id="${esc(s.id)}"><option value="">부서 미지정</option>${deptOptions}</select>
+              <select class="stu-class-select" data-student-id="${esc(s.id)}"><option value="">반 미지정</option>${classOptions}</select>
+            </div>`
+          : "";
+        // 연락처·주소 (2026-09-03 5차) — tel: 링크는 클릭하면 바로 전화 걸림.
+        const phoneHtml = s.phone ? `<a href="tel:${esc(s.phone)}">📞 ${esc(s.phone)}</a>` : "";
+        const addressHtml = s.address ? `<span class="stu-address">📍 ${esc(s.address)}</span>` : "";
+        const contactHtml = `<div class="stu-contact">
+            ${phoneHtml}${addressHtml}
+            <button type="button" class="btn-s" data-action="toggle-contact" data-student-id="${esc(s.id)}">연락처·주소 ${s.phone || s.address ? "수정" : "추가"}</button>
+          </div>
+          <div class="contact-box" data-student-id="${esc(s.id)}" hidden>
+            <input type="tel" class="contact-phone-input" placeholder="전화번호" value="${esc(s.phone || "")}" />
+            <input type="text" class="contact-address-input" placeholder="주소" value="${esc(s.address || "")}" />
+            <button type="button" class="btn-s btn-primary" data-action="save-contact" data-student-id="${esc(s.id)}">저장</button>
+          </div>`;
+        // 최근 돌봄메모 (2026-09-03 5차) — 새 입력칸 없이 careNotes에서 조회만 한다.
+        const latestNote = latestNoteByStudent[s.id];
+        const recentNoteHtml = latestNote
+          ? `<div class="stu-recent-note">최근 ${esc(LS.noteKinds[latestNote.kind] || latestNote.kind)}(${esc(latestNote.date)}): ${esc(latestNote.text)}</div>`
+          : "";
         return `<div class="item attend-row" data-student-id="${esc(s.id)}">
           <div>
             <strong>${esc(s.name)}</strong>
             <div class="stu-meta">${meta}</div>
+            ${placementControls}
+            ${contactHtml}
+            ${recentNoteHtml}
           </div>
           <button type="button" class="btn-s attend-btn${checked ? " done" : ""}" data-action="attend" data-student-id="${esc(s.id)}">
             ${checked ? "출석 완료 ✓" : "오늘 출석"}
           </button>
         </div>`;
       }).join("");
+      tgt.querySelectorAll('[data-action="toggle-contact"]').forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const box = tgt.querySelector(`.contact-box[data-student-id="${cssEscape(btn.dataset.studentId)}"]`);
+          if (box) box.hidden = !box.hidden;
+        });
+      });
+      tgt.querySelectorAll('[data-action="save-contact"]').forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const box = tgt.querySelector(`.contact-box[data-student-id="${cssEscape(btn.dataset.studentId)}"]`);
+          const phone = box.querySelector(".contact-phone-input").value;
+          const address = box.querySelector(".contact-address-input").value;
+          btn.disabled = true;
+          try {
+            await LS.updateStudentContact(btn.dataset.studentId, { phone, address });
+            await reload();
+          } catch (err) {
+            alert(err.message || "저장하지 못했습니다.");
+          } finally {
+            btn.disabled = false;
+          }
+        });
+      });
+      tgt.querySelectorAll(".stu-dept-select").forEach((sel) => {
+        sel.addEventListener("change", () => {
+          const studentId = sel.dataset.studentId;
+          changeStudentPlacement(studentId, sel.value || null, null);
+        });
+      });
+      tgt.querySelectorAll(".stu-class-select").forEach((sel) => {
+        sel.addEventListener("change", () => {
+          const studentId = sel.dataset.studentId;
+          const student = students.find((x) => x.id === studentId);
+          changeStudentPlacement(studentId, student ? student.departmentId : null, sel.value || null);
+        });
+      });
       tgt.querySelectorAll('[data-action="attend"]').forEach((btn) => {
         btn.addEventListener("click", () => {
           const studentId = btn.getAttribute("data-student-id");
@@ -225,6 +662,7 @@
             try {
               await LS.recordAttendance({ studentId: studentId, date: LS.todayKst() });
               await reload();
+              await reloadAlerts();
             } catch (err) {
               // 여기서 삼키지 않고 체인 자체가 reject되면, 이후 대기 중인 클릭들이 영영
               // 실행되지 않는다(끊긴 체인) — 로그만 남기고 큐는 계속 흐르게 한다.
@@ -243,7 +681,10 @@
         msgEl.hidden = true;
         const fd = new FormData(form);
         const name = String(fd.get("name") || "").trim();
-        const department = String(fd.get("department") || "").trim();
+        const departmentId = String(fd.get("departmentId") || "").trim() || null;
+        const classId = String(fd.get("classId") || "").trim() || null;
+        const phone = String(fd.get("phone") || "").trim() || null;
+        const address = String(fd.get("address") || "").trim() || null;
         if (!name) {
           msgEl.hidden = false; msgEl.className = "msg err"; msgEl.textContent = "학생 이름을 입력해 주세요.";
           return;
@@ -251,8 +692,9 @@
         const btn = form.querySelector('button[type="submit"]');
         btn.disabled = true;
         try {
-          await LS.addStudent({ name, department });
+          await LS.addStudent({ name, departmentId, classId, phone, address });
           form.reset();
+          fillClassSelectFor("", "student-class-select");
           await reload();
         } catch (err) {
           msgEl.hidden = false; msgEl.className = "msg err"; msgEl.textContent = err.message || "추가하지 못했습니다.";
@@ -262,6 +704,212 @@
       });
     }
 
+    // ─── 새친구관리 — 보호자 등록 + CSV 일괄등록 (2026-09-03 4차) ─────────────
+    function addGuardianRow() {
+      const list = document.getElementById("friend-guardians-list");
+      const idx = list.querySelectorAll(".guardian-row").length;
+      const div = document.createElement("div");
+      div.className = "guardian-row";
+      const removeBtn = idx > 0
+        ? `<div style="grid-column:1/-1;text-align:right"><button type="button" class="btn-ghost guardian-remove">이 보호자 삭제</button></div>`
+        : "";
+      div.innerHTML = `
+        <div class="field"><label class="label">보호자 ${idx + 1} 이름</label><input class="guardian-name" maxlength="100" placeholder="예: 김선영" /></div>
+        <div class="field"><label class="label">관계</label>
+          <select class="guardian-relation">
+            <option value="mother">어머니</option>
+            <option value="father">아버지</option>
+            <option value="guardian">보호자</option>
+            <option value="other">기타</option>
+          </select></div>
+        <div class="field"><label class="label">연락처</label><input class="guardian-phone" maxlength="30" placeholder="010-0000-0000" /></div>
+        ${removeBtn}
+      `;
+      list.appendChild(div);
+      div.querySelector(".guardian-remove")?.addEventListener("click", () => { div.remove(); renumberGuardianLabels(); });
+    }
+
+    function renumberGuardianLabels() {
+      [...document.querySelectorAll("#friend-guardians-list .guardian-row")].forEach((row, i) => {
+        const label = row.querySelector(".label");
+        if (label) label.textContent = `보호자 ${i + 1} 이름`;
+      });
+    }
+
+    function resetGuardianRows() {
+      document.getElementById("friend-guardians-list").innerHTML = "";
+      addGuardianRow();
+    }
+
+    function collectGuardianRows() {
+      return [...document.querySelectorAll("#friend-guardians-list .guardian-row")]
+        .map((row) => ({
+          name: row.querySelector(".guardian-name").value.trim(),
+          relation: row.querySelector(".guardian-relation").value || "other",
+          phone: row.querySelector(".guardian-phone").value.trim(),
+        }))
+        .filter((g) => g.name);
+    }
+
+    function bindFriendForm() {
+      document.getElementById("add-friend-guardian-btn").addEventListener("click", () => addGuardianRow());
+      const form = document.getElementById("add-friend-form");
+      const msgEl = document.getElementById("friend-message");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        msgEl.hidden = true;
+        const fd = new FormData(form);
+        const guardians = collectGuardianRows();
+        if (!guardians.length) {
+          msgEl.hidden = false; msgEl.className = "msg err"; msgEl.textContent = "보호자를 최소 한 분 입력해 주세요.";
+          return;
+        }
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        try {
+          await LS.addStudent({
+            name: fd.get("name"),
+            birthYear: fd.get("birthYear"),
+            gender: fd.get("gender") || null,
+            departmentId: fd.get("departmentId") || null,
+            classId: fd.get("classId") || null,
+            guardians,
+          });
+          form.reset();
+          fillClassSelectFor("", "friend-class-select");
+          resetGuardianRows();
+          await reload();
+          msgEl.hidden = false; msgEl.className = "msg ok"; msgEl.textContent = "새친구 학생을 등록했습니다.";
+        } catch (err) {
+          msgEl.hidden = false; msgEl.className = "msg err"; msgEl.textContent = err.message || "등록하지 못했습니다.";
+        } finally {
+          btn.disabled = false;
+        }
+      });
+      bindBulkFriendImport();
+    }
+
+    function renderFriendList() {
+      const tgt = document.getElementById("friend-list");
+      const rows = students.filter((s) => (s.guardians || []).length > 0)
+        .slice().sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+      if (!rows.length) {
+        tgt.innerHTML = '<p class="muted">보호자 정보와 함께 등록된 새친구가 없습니다.</p>';
+        return;
+      }
+      tgt.innerHTML = rows.map((s) => {
+        const placement = LS.resolveStudentPlacement(s, deptMap, classMap);
+        const meta = [placement.department, placement.className].filter(Boolean).join(" · ") || "부서 미지정";
+        const guardianText = (s.guardians || []).map((g) => {
+          const rel = LS.guardianRelationLabel[g.relation] || g.relation || "";
+          return [g.name, rel, g.phone].filter(Boolean).join(" · ");
+        }).join(", ");
+        return `<div class="item">
+          <strong>${esc(s.name)}</strong> <span class="stu-meta">${esc(meta)}${s.birthYear ? " · " + esc(String(s.birthYear)) + "년생" : ""}</span>
+          <div class="stu-meta">보호자: ${esc(guardianText)}</div>
+        </div>`;
+      }).join("");
+    }
+
+    // ─── CSV 일괄등록 (families.html parseBulkCsv 이식) ───────────────────────
+    const FRIEND_BULK_HEADERS = ["학생이름", "생년", "성별", "부서명", "반명", "보호자이름", "보호자전화", "관계", "메모"];
+
+    function parseFriendBulkCsv(text) {
+      const lines = text.split(/\r?\n/).filter((l) => l.trim());
+      if (!lines.length) return { rows: [], errors: ["빈 입력"] };
+      const headerCols = lines[0].split(",").map((s) => s.trim());
+      if (headerCols[0] !== FRIEND_BULK_HEADERS[0]) {
+        return { rows: [], errors: [`첫 컬럼은 '${FRIEND_BULK_HEADERS[0]}'이어야 합니다 (현재: '${headerCols[0]}')`] };
+      }
+      const rows = [];
+      const errors = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(",").map((s) => s.trim());
+        const [studentName, birthYearRaw, genderRaw, deptName, className, parentName, parentPhone, relationRaw, personalNote] = cols;
+        if (!studentName || !parentName) {
+          errors.push(`행 ${i}: 필수값 누락 (학생이름·보호자이름)`);
+          continue;
+        }
+        const birthYear = birthYearRaw ? parseInt(birthYearRaw, 10) : null;
+        const gender = (genderRaw === "M" || genderRaw === "F") ? genderRaw : "";
+        const relation = ["father", "mother", "guardian", "other"].includes(relationRaw) ? relationRaw : "other";
+        let departmentId = null;
+        if (deptName) {
+          const d = departments.find((x) => x.name === deptName);
+          departmentId = d ? d.id : null; // 못 찾으면 미지정으로 처리(하드 실패시키지 않음 — hint에 명시)
+        }
+        let classId = null;
+        if (className && departmentId) {
+          const c = classes.find((x) => x.name === className && x.departmentId === departmentId);
+          classId = c ? c.id : null;
+        }
+        rows.push({
+          name: studentName, birthYear, gender, departmentId, classId,
+          personalNote: personalNote || null,
+          guardians: [{ name: parentName, relation, phone: parentPhone || "" }],
+        });
+      }
+      return { rows, errors };
+    }
+
+    function bindBulkFriendImport() {
+      document.getElementById("friend-bulk-file").addEventListener("change", async (e) => {
+        const f = e.target.files?.[0];
+        if (!f) return;
+        document.getElementById("friend-bulk-text").value = await f.text();
+      });
+      document.getElementById("friend-bulk-preview-btn").addEventListener("click", previewFriendBulk);
+      document.getElementById("friend-bulk-submit-btn").addEventListener("click", submitFriendBulk);
+    }
+
+    function previewFriendBulk() {
+      const text = document.getElementById("friend-bulk-text").value || "";
+      const { rows, errors } = parseFriendBulkCsv(text);
+      const preview = document.getElementById("friend-bulk-preview");
+      const submit = document.getElementById("friend-bulk-submit-btn");
+      let html = "";
+      if (errors.length) {
+        html += `<p class="msg err">검증 오류 ${errors.length}건:</p><ul>${errors.slice(0, 10).map((e) => `<li>${esc(e)}</li>`).join("")}</ul>`;
+      }
+      if (rows.length) {
+        const tableRows = rows.slice(0, 5).map((r) =>
+          `<tr><td>${esc(r.name)}</td><td>${r.birthYear || ""}</td><td>${esc(r.guardians[0].name)}</td><td>${esc(r.guardians[0].phone)}</td></tr>`
+        ).join("");
+        html += `<p><strong>등록 예정: ${rows.length}건</strong> (처음 5건 미리보기)</p>
+          <table><thead><tr><th>학생</th><th>생년</th><th>보호자</th><th>전화</th></tr></thead><tbody>${tableRows}</tbody></table>`;
+        submit.disabled = false;
+        submit.dataset.rows = JSON.stringify(rows);
+      } else {
+        submit.disabled = true;
+        if (!errors.length) html += '<p class="muted">처리할 행이 없습니다.</p>';
+      }
+      preview.innerHTML = html;
+    }
+
+    async function submitFriendBulk() {
+      const btn = document.getElementById("friend-bulk-submit-btn");
+      const msg = document.getElementById("friend-bulk-message");
+      const rowsJson = btn.dataset.rows;
+      if (!rowsJson) return;
+      const rows = JSON.parse(rowsJson);
+      btn.disabled = true;
+      try {
+        const result = await LS.bulkAddStudents(rows);
+        const failTail = result.failed.length
+          ? ` · 실패 ${result.failed.length}건 (${result.failed.slice(0, 3).map((f) => `${f.name}: ${f.reason}`).join(", ")})`
+          : "";
+        msg.hidden = false;
+        msg.className = "msg " + (result.failed.length ? "err" : "ok");
+        msg.textContent = `등록 완료 — 성공 ${result.created.length}/${result.total}${failTail}`;
+        document.getElementById("friend-bulk-text").value = "";
+        document.getElementById("friend-bulk-preview").innerHTML = "";
+        btn.dataset.rows = "";
+        await reload();
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
     // ─── 돌봄·기도 메모 ───────────────────────────────────────
     function studentName(id) {
       const s = students.find((x) => x.id === id);
@@ -269,7 +917,11 @@
     }
 
     function renderStudentOptions() {
-      const opts = students.map((s) => `<option value="${esc(s.id)}">${esc(s.name)}${s.department ? " · " + esc(s.department) : ""}</option>`).join("");
+      const opts = students.map((s) => {
+        const placement = LS.resolveStudentPlacement(s, deptMap, classMap);
+        const label = [placement.department, placement.className].filter(Boolean).join(" · ");
+        return `<option value="${esc(s.id)}">${esc(s.name)}${label ? " · " + esc(label) : ""}</option>`;
+      }).join("");
       const sel = document.getElementById("note-student");
       const prev = sel.value;
       sel.innerHTML = '<option value="">학생을 선택하세요</option>' + opts;
@@ -284,6 +936,19 @@
       const filter = document.getElementById("note-filter").value;
       notes = await LS.listCareNotes(filter ? { studentId: filter } : null);
       renderNotes();
+      await reloadLatestNotes();
+    }
+
+    // 학생 명부(오늘 출석 목록) "최근 돌봄메모" 미리보기용 — 새 저장소를 만들지 않고
+    // careNotes 전체를 읽어 학생별 가장 최근 1건만 뽑는다(listCareNotes는 이미
+    // 날짜 내림차순으로 정렬돼 있어 학생별 첫 등장이 곧 최신 메모).
+    async function reloadLatestNotes() {
+      const all = await LS.listCareNotes();
+      latestNoteByStudent = {};
+      all.forEach((n) => {
+        if (!latestNoteByStudent[n.studentId]) latestNoteByStudent[n.studentId] = n;
+      });
+      renderStudentList();
     }
 
     function renderNotes() {
@@ -393,6 +1058,210 @@
           btn.disabled = false;
         }
       });
+    }
+
+    // ─── 결석 알림 — F4 (2026-09-03 3차) ───────────────────────
+    async function reloadAlerts() {
+      alerts = await LS.computeAbsenceAlerts();
+      const resolutions = await LS.listAlertResolutions();
+      alertResolutionMap = {};
+      resolutions.forEach((r) => { alertResolutionMap[r.studentId + "|" + r.stage] = r; });
+      renderAlerts();
+    }
+
+    function renderAlerts() {
+      const tgt = document.getElementById("alert-list");
+      if (!alerts.length) {
+        tgt.innerHTML = '<p class="muted">결석 1주 이상인 학생이 없습니다.</p>';
+        return;
+      }
+      tgt.innerHTML = alerts.map((a) => {
+        const resolution = alertResolutionMap[a.studentId + "|" + a.stage];
+        const lastAttLabel = a.lastAttendance ? `마지막 출석 ${esc(a.lastAttendance)}` : "출석 기록 없음(등록 이후 미출석)";
+        const stageLabel = F4_STAGE_LABEL[a.stage] || a.stage;
+        const resolvedHtml = resolution
+          ? `<div class="alert-resolved">✓ 처리됨 — ${esc(resolution.resolution)} <span class="muted small">(${esc((resolution.resolvedAt || "").slice(0, 10))})</span></div>`
+          : `<div class="alert-actions">
+              <button type="button" class="btn-s" data-action="sms" data-student-id="${esc(a.studentId)}" data-stage="${esc(a.stage)}">문자 보내기</button>
+              <button type="button" class="btn-s" data-action="show-resolve" data-student-id="${esc(a.studentId)}" data-stage="${esc(a.stage)}">처리 메모 남기기</button>
+            </div>
+            <div class="resolve-box" data-student-id="${esc(a.studentId)}" data-stage="${esc(a.stage)}" hidden>
+              <textarea rows="2" placeholder="예: 보호자와 통화했고 다음 주에 다시 확인"></textarea>
+              <div class="alert-actions">
+                <button type="button" class="btn-s btn-primary" data-action="save-resolve" data-student-id="${esc(a.studentId)}" data-stage="${esc(a.stage)}">저장</button>
+              </div>
+            </div>`;
+        return `<div class="item alert-row stage-${esc(a.stage)}">
+          <div class="alert-head"><strong>${esc(a.studentName)}</strong> <span class="badge">${esc(stageLabel)}</span></div>
+          <div class="alert-meta">결석 ${a.weeksAbsent}주(${a.daysSince}일) · ${lastAttLabel}</div>
+          ${resolvedHtml}
+        </div>`;
+      }).join("");
+
+      tgt.querySelectorAll('[data-action="sms"]').forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const a = alerts.find((x) => x.studentId === btn.dataset.studentId && x.stage === btn.dataset.stage);
+          if (!a) return;
+          const bodyFn = F4_MESSAGE[a.stage] || F4_MESSAGE.week1;
+          const body = bodyFn(a.studentName);
+          // 수신자를 지정하지 않음 — 보호자 연락처를 이 앱에 저장하지 않으므로
+          // 문자 앱을 열어 사용자가 직접 받는 사람을 고르게 한다.
+          window.location.href = "sms:?body=" + encodeURIComponent(body);
+        });
+      });
+      tgt.querySelectorAll('[data-action="show-resolve"]').forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const box = tgt.querySelector(`.resolve-box[data-student-id="${cssEscape(btn.dataset.studentId)}"][data-stage="${cssEscape(btn.dataset.stage)}"]`);
+          if (box) { box.hidden = !box.hidden; if (!box.hidden) box.querySelector("textarea").focus(); }
+        });
+      });
+      tgt.querySelectorAll('[data-action="save-resolve"]').forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const box = tgt.querySelector(`.resolve-box[data-student-id="${cssEscape(btn.dataset.studentId)}"][data-stage="${cssEscape(btn.dataset.stage)}"]`);
+          const text = box ? box.querySelector("textarea").value : "";
+          btn.disabled = true;
+          try {
+            await LS.resolveAbsenceAlert(btn.dataset.studentId, btn.dataset.stage, text);
+            await reloadAlerts();
+          } catch (err) {
+            alert(err.message || "저장하지 못했습니다.");
+          } finally {
+            btn.disabled = false;
+          }
+        });
+      });
+    }
+
+    function cssEscape(value) {
+      return String(value || "").replace(/"/g, '\\"');
+    }
+
+    // ─── 교사관리 (2026-09-03 4차) ─────────────────────────────
+    async function reloadTeachers() {
+      teachers = await LS.listTeachers();
+      weeklyAttendanceIds = await LS.weeklyTeacherAttendanceIds();
+      renderTeacherList();
+    }
+
+    function bindTeacherForm() {
+      const form = document.getElementById("add-teacher-form");
+      const msgEl = document.getElementById("teacher-message");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        msgEl.hidden = true;
+        const fd = new FormData(form);
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        try {
+          await LS.addTeacher({
+            name: fd.get("name"),
+            role: fd.get("role"),
+            departmentId: fd.get("departmentId") || null,
+            phone: fd.get("phone"),
+          });
+          form.reset();
+          await reloadTeachers();
+          msgEl.hidden = false; msgEl.className = "msg ok"; msgEl.textContent = "교사를 추가했습니다.";
+        } catch (err) {
+          msgEl.hidden = false; msgEl.className = "msg err"; msgEl.textContent = err.message || "추가하지 못했습니다.";
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    }
+
+    function renderTeacherList() {
+      const tgt = document.getElementById("teacher-list");
+      if (!teachers.length) {
+        tgt.innerHTML = '<p class="muted">등록된 교사가 없습니다.</p>';
+        return;
+      }
+      tgt.innerHTML = teachers.map((t) => {
+        const dept = t.departmentId && deptMap[t.departmentId] ? deptMap[t.departmentId].name : "부서 미배정";
+        const attended = weeklyAttendanceIds.has(t.id);
+        const historyOpen = openTeacherHistory.has(t.id);
+        return `<div class="item teacher-row" data-teacher-id="${esc(t.id)}">
+          <div class="teacher-head">
+            <strong>${esc(t.name)}</strong>
+            <span class="badge">${esc(LS.teacherRoles[t.role] || t.role)}</span>
+            <span class="teacher-meta">${esc(dept)}${t.phone ? " · " + esc(t.phone) : ""}</span>
+          </div>
+          <div class="teacher-actions">
+            <button type="button" class="btn-s attend-btn${attended ? " done" : ""}" data-action="toggle-attendance" data-teacher-id="${esc(t.id)}">
+              ${attended ? "이번 주 확인 ✓" : "이번 주 출석 확인"}
+            </button>
+            <button type="button" class="btn-s" data-action="toggle-history" data-teacher-id="${esc(t.id)}">돌봄 기록</button>
+          </div>
+          <div class="care-box" data-teacher-id="${esc(t.id)}" ${historyOpen ? "" : "hidden"}>
+            <select class="care-type">
+              <option value="check_in">안부</option>
+              <option value="encouragement">격려</option>
+              <option value="prayer">기도</option>
+              <option value="rest_offered">쉼 상담</option>
+            </select>
+            <textarea rows="2" placeholder="예: 이번 주 반 운영을 위해 함께 기도"></textarea>
+            <div class="teacher-actions">
+              <button type="button" class="btn-s btn-primary" data-action="save-care" data-teacher-id="${esc(t.id)}">기록 남기기</button>
+            </div>
+            <div class="teacher-history" data-teacher-id="${esc(t.id)}"><span class="muted small">불러오는 중...</span></div>
+          </div>
+        </div>`;
+      }).join("");
+
+      tgt.querySelectorAll('[data-action="toggle-attendance"]').forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          btn.disabled = true;
+          try {
+            await LS.toggleTeacherWeeklyAttendance(btn.dataset.teacherId);
+            await reloadTeachers();
+          } finally {
+            btn.disabled = false;
+          }
+        });
+      });
+      tgt.querySelectorAll('[data-action="toggle-history"]').forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.teacherId;
+          const box = tgt.querySelector(`.care-box[data-teacher-id="${cssEscape(id)}"]`);
+          if (!box) return;
+          if (box.hidden) { openTeacherHistory.add(id); box.hidden = false; loadTeacherHistory(id); }
+          else { openTeacherHistory.delete(id); box.hidden = true; }
+        });
+      });
+      tgt.querySelectorAll('[data-action="save-care"]').forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const box = tgt.querySelector(`.care-box[data-teacher-id="${cssEscape(btn.dataset.teacherId)}"]`);
+          const type = box.querySelector(".care-type").value;
+          const notes = box.querySelector("textarea").value;
+          btn.disabled = true;
+          try {
+            await LS.addTeacherCareLog({ teacherId: btn.dataset.teacherId, type, notes });
+            box.querySelector("textarea").value = "";
+            await loadTeacherHistory(btn.dataset.teacherId);
+            await reloadTeachers();
+          } catch (err) {
+            alert(err.message || "저장하지 못했습니다.");
+          } finally {
+            btn.disabled = false;
+          }
+        });
+      });
+      // 펼쳐져 있던 교사는 재렌더 후에도 기록을 다시 불러온다.
+      openTeacherHistory.forEach((id) => loadTeacherHistory(id));
+    }
+
+    async function loadTeacherHistory(teacherId) {
+      const tgt = document.querySelector(`.teacher-history[data-teacher-id="${cssEscape(teacherId)}"]`);
+      if (!tgt) return;
+      const logs = await LS.listTeacherCareLogs({ teacherId });
+      if (!logs.length) {
+        tgt.innerHTML = '<span class="muted small">아직 기록이 없습니다.</span>';
+        return;
+      }
+      tgt.innerHTML = logs.slice(0, 8).map((l) => {
+        const label = LS.teacherCareKinds[l.type] || l.type;
+        return `<div class="item"><strong>${esc(label)}</strong> <span class="muted small">${esc(l.date)}</span><div class="muted small">${esc(l.notes)}</div></div>`;
+      }).join("");
     }
 
     // ─── 백업 (CSV 3종 + JSON) ────────────────────────────────
