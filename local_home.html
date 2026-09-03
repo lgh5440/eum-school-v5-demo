@@ -52,8 +52,12 @@
   .sum-tile .sum-label { display: block; font-size: 0.74rem; color: #5C6A93; margin-top: 2px; }
   .sum-tile.alert .sum-num { color: #b3261e; }
   .manage-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding-top: 8px; border-top: 1px dashed #e6e2d8; }
-  .manage-bar .manage-label { font-size: 0.78rem; color: #5C6A93; font-weight: 700; margin-right: 2px; }
   .manage-bar .btn-s.on { background: var(--primary-blue); color: #fff; }
+  /* 홈으로 버튼(2026-09-03 7차): 관리 패널이 열려 있을 때만 노출 — 이미 홈(패널 미개방)일 때
+     "홈으로" 버튼이 떠 있으면 누를 이유가 없는 액션이라 오히려 혼란을 준다. 기존 닫기 버튼도
+     패널 안(hidden 상태)에 있어 패널이 열렸을 때만 보이던 것과 동일한 노출 패턴을 유지한다. */
+  .manage-bar .home-btn { display: none; margin-right: 2px; }
+  body.mode-manage .manage-bar .home-btn { display: inline-flex; align-items: center; gap: 4px; }
   .manage-panel h2 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .manage-panel h2 .panel-close { margin-left: auto; font-weight: 600; }
   .h2-tools { display: inline-flex; gap: 6px; margin-left: 8px; vertical-align: middle; }
@@ -145,7 +149,7 @@
       <div class="sum-tile"><span class="sum-num" id="sum-notes">0</span><span class="sum-label">이번 주 메모</span></div>
     </div>
     <div class="manage-bar" id="manage-bar">
-      <span class="manage-label">관리</span>
+      <button type="button" class="btn-s home-btn" data-close-panel>🏠 홈으로</button>
       <button type="button" class="btn-s" data-manage="dept">부서·반 설정</button>
       <button type="button" class="btn-s" data-manage="students">학생 명부</button>
       <button type="button" class="btn-s" data-manage="friends">새친구관리</button>
@@ -155,7 +159,7 @@
   </section>
 
   <section class="eum-c acc manage-panel" id="panel-dept" hidden>
-    <h2>부서·반 설정 <button type="button" class="btn-s panel-close" data-close-panel>✕ 닫고 홈으로</button></h2>
+    <h2>부서·반 설정</h2>
     <p class="hint">학생을 등록하기 전에 부서와 반을 먼저 만들어 두면, 「학생 명부」에서 등록할 때나 학생 상세에서 바로 배정할 수 있습니다. 부서 없이도 학생 등록은 가능합니다.</p>
     <form id="add-department-form" class="form-grid">
       <div class="row">
@@ -197,7 +201,7 @@
   </section>
 
   <section class="eum-c acc manage-panel" id="panel-students" hidden>
-    <h2>학생 명부 <button type="button" class="btn-s panel-close" data-close-panel>✕ 닫고 홈으로</button></h2>
+    <h2>학생 명부</h2>
     <p class="hint">이름만 있으면 바로 추가할 수 있습니다. 부서·반은 선택입니다.</p>
     <form id="add-student-form" class="form-grid">
       <div class="row">
@@ -234,7 +238,7 @@
   </section>
 
   <section class="eum-c acc manage-panel" id="panel-friends" hidden>
-    <h2>새친구관리 <button type="button" class="btn-s panel-close" data-close-panel>✕ 닫고 홈으로</button></h2>
+    <h2>새친구관리</h2>
     <p class="hint">보호자 정보와 함께 새 학생을 등록합니다. 여러 명을 한 번에 등록하려면 아래 CSV 일괄등록을 펼쳐서 쓰세요.</p>
     <form id="add-friend-form" class="form-grid">
       <div class="row">
@@ -305,7 +309,7 @@
   </section>
 
   <section class="eum-c acc manage-panel" id="panel-teachers" hidden>
-    <h2>교사관리 <button type="button" class="btn-s panel-close" data-close-panel>✕ 닫고 홈으로</button></h2>
+    <h2>교사관리</h2>
     <p class="hint">교사 명단을 관리하고, 이번 주 출석 확인과 돌봄 기록(안부·격려·기도·쉼상담)을 남깁니다.</p>
     <form id="add-teacher-form" class="form-grid">
       <div class="row">
@@ -340,7 +344,7 @@
   </section>
 
   <section class="eum-c manage-panel" id="panel-backup" hidden>
-    <h2>백업 <button type="button" class="btn-s panel-close" data-close-panel>✕ 닫고 홈으로</button></h2>
+    <h2>백업</h2>
     <p class="hint">이 기기가 고장 나거나 브라우저 데이터가 지워지면 복구할 수 없습니다. 정기적으로 내려받아 두세요.</p>
     <p class="hint small muted">엑셀용 CSV는 엑셀·구글시트에서 바로 열어 보는 용도(한글 깨짐 없음)이고, 백업 파일(JSON)은 나중에 협업 모드로 옮기거나 같은 기기를 다시 설정할 때 되살리는 용도입니다.</p>
     <div class="backup-grid">
